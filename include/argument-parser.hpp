@@ -10,6 +10,7 @@
 #define WOL_CPP_CLIENT_ARGUMENT_PARSER
 
 #include <string>
+#include <sstream>
 #include <map>
 
 /**
@@ -50,7 +51,7 @@ namespace WoL
         virtual void parseValue(std::string argValue) = 0;
 
         /**
-         * This method return's this ArgumentProcessor's help messsage.
+         * This method returns this ArgumentProcessor's help messsage.
          *
          * @return This ArgumentProcessor's help message.
          */
@@ -92,30 +93,56 @@ namespace WoL
     {
     public:
         /**
-         * A basic constructor.
+         * A basic constructor. This method is implemented in this header in
+         * order to make use of implicit instantiation.
          */
         TypedArgumentProcessor(std::string argName,
                                std::string helpMessage,
-                               T           defaultValue);
+                               T           defaultValue)
+        :
+        ArgumentProcessor(argName, helpMessage),
+        value(defaultValue)
+        {
+        }
 
         /**
-         * A basic destructor.
+         * A basic destructor. This method is implemented in this header in
+         * order to make use of implicit instantiation.
          */
-        virtual ~TypedArgumentProcessor();
+        virtual ~TypedArgumentProcessor()
+        {
+        }
 
         /**
          * @copydoc ArgumentProcessor::parseValue(std::string)
          */
-        void parseValue(std::string argValue);
+        void parseValue(std::string argValue)
+        {
+            /**
+             * @TODO This lexical casting is performed very naively, and with no
+             *       error-handling.
+             *       MB 15/01/2014
+             */
+            std::stringstream interpreter;
+
+            interpreter << argValue;
+
+            interpreter >> value;
+        }
 
         /**
          * This method returns the value of this argument. If no value has been
          * passed through the command-line, the default value is returned.
+         * This method is implemented in this header in order to make use of
+         * implicit instantiation.
          *
          * @return The value of this argument. If no value has been passed
          *         through the command-line, the default value is returned.
          */
-        T getValue();
+        T getValue()
+        {
+            return value;
+        }
 
     private:
         T value; /** The value of this command-line argument. */
@@ -148,6 +175,13 @@ namespace WoL
         static void parseArguments(int argc, char **argv);
 
     private:
+        /**
+         * This method prints a message describing the program's use. It does
+         * so by printing the help message for every registered
+         * ArgumentProcessor.
+         */
+        static void printHelp();
+
         static ArgumentProcessorMap argProcessorMap; /**< A mapping of
                                                       *   argument name to
                                                       *   ArgumentProcessor

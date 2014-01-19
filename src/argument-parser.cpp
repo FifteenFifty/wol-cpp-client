@@ -8,7 +8,6 @@
  */
 
 #include <argument-parser.hpp>
-#include <sstream>
 #include <iostream>
 
 namespace WoL
@@ -21,7 +20,7 @@ namespace WoL
 
     std::string ArgumentProcessor::getHelpMessage()
     {
-        return helpMessage;
+        return getName() + "=arg : " + helpMessage;
     }
 
     std::string ArgumentProcessor::getName()
@@ -35,45 +34,6 @@ namespace WoL
     argName(argName),
     helpMessage(helpMessage)
     {
-    }
-
-    template <typename T>
-    TypedArgumentProcessor<T>::TypedArgumentProcessor(std::string argName,
-                                                      std::string helpMessage,
-                                                      T           defaultValue)
-    :
-    ArgumentProcessor(argName, helpMessage),
-    value(defaultValue)
-    {
-    }
-    template TypedArgumentProcessor<std::string>::TypedArgumentProcessor(std::string argName,
-                                                                         std::string helpMessage,
-                                                                         std::string defaultValue);
-
-    template <typename T>
-    TypedArgumentProcessor<T>::~TypedArgumentProcessor()
-    {
-    }
-
-    template <typename T>
-    void TypedArgumentProcessor<T>::parseValue(std::string argValue)
-    {
-        /**
-         * @TODO This lexical casting is performed very naively, and with no
-         *       error-handling.
-         *       MB 15/01/2014
-         */
-        std::stringstream interpreter;
-
-        interpreter << argValue;
-
-        interpreter >> value;
-    }
-
-    template <typename T>
-    T TypedArgumentProcessor<T>::getValue()
-    {
-        return value;
     }
 
     void ArgumentParser::registerProcessor(ArgumentProcessor *processor)
@@ -106,14 +66,60 @@ namespace WoL
 
     void ArgumentParser::parseArguments(int argc, char **argv)
     {
+        std::map<std::string, ArgumentProcessor*>::iterator mapIt;
+
         for (int i = 1; i < argc; ++i)
         {
             std::string arg(argv[i]);
             size_t      equalsPos = arg.find("=");
             std::string argName   = arg.substr(0, equalsPos);
-            std::string value     = arg.substr(equalsPos + 1, arg.length());
+            std::string argValue  = arg.substr(equalsPos + 1, arg.length());
 
-            //TODO: Pass the argument value to the correct argument parser
+            if ((mapIt = argProcessorMap.find(argName)) != argProcessorMap.end())
+            {
+                if (!mapIt->second)
+                {
+                    /**
+                     * @TODO This error should be handled.
+                     *       MLB 19/01/2014
+                     */
+                    return;
+                }
+
+                (mapIt->second)->parseValue(argValue);
+            }
+            else
+            {
+                std::cout << "Unrecognised argument: "
+                          << argName
+                          << "."
+                          << std::endl;
+                printHelp();
+                return;
+            }
+        }
+    }
+
+    void ArgumentParser::printHelp()
+    {
+        std::map<std::string, ArgumentProcessor*>::iterator mapIt;
+
+        std::cout << "Usage: " << std::endl;
+
+        for (mapIt = argProcessorMap.begin();
+             mapIt != argProcessorMap.end();
+             ++mapIt)
+        {
+            if (!mapIt->second)
+            {
+                /**
+                 * @TODO Handle this error.
+                 *       MLB 19/01/2014
+                 */
+                return;
+            }
+
+            std::cout << (mapIt->second)->getHelpMessage() << std::endl;
         }
     }
 }
