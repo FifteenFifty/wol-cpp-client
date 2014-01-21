@@ -10,6 +10,7 @@
 #define WOL_CPP_CLIENT_COMBATLOG_PARSER
 
 #include <string>
+#include <combat-log-structures.hpp>
 
 /**
  * This namespace encapsulates all WoL client functionality.
@@ -30,8 +31,7 @@ namespace WoL
          */
         CombatLogParser(std::string logDir);
 
-        /**
-         * This method parses the combat log into a CombatLog object.
+        /*This method parses the combat log into a CombatLog object.
          *
          * @return A CombatLog object containing the parsed combat log.
          */

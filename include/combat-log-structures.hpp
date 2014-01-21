@@ -13,7 +13,7 @@
 /**
  * This namespace encapsulates all WoL client functionality.
  */
-WoL
+namespace WoL
 {
     /**
      * This class defines a structure that contains a parsed combat log.

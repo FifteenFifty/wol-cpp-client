@@ -8,6 +8,7 @@
  */
 
 #include <combat-log-uploader.hpp>
+#include <curl/curl.h>
 
 namespace WoL
 {
@@ -19,5 +20,24 @@ namespace WoL
     passwordHash(passwordHash),
     logParser(logParser)
     {
+    }
+
+    CombatLogUploader::upload()
+    {
+        CURL *curl = NULL;
+
+        curl = curl_easy_init();
+
+        if (curl)
+        {
+            curl_eay_cleanup(curl);
+        }
+        else
+        {
+            /**
+             * @TODO This error should be handled.
+             *       MLB 21/01/2014
+             */
+        }
     }
 }
