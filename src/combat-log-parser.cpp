@@ -15,10 +15,10 @@ namespace WoL
     logDir(logDir),
     logDirFound(false)
     {
-        logDirFound = validateLogDir();
+        logDirFound = validLogDir();
     }
 
-    CombatLogParser::validLogDir()
+    bool CombatLogParser::validLogDir()
     {
         /**
          * @TODO This method is NYI and always returns true.
