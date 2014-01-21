@@ -20,6 +20,13 @@ WoL
      */
     class CombatLog
     {
+    public:
+        /**
+         * A basic constructor.
+         */
+        CombatLog();
+
+    private:
     };
 }
 
