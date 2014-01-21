@@ -28,7 +28,7 @@ AM_CONFIG_HEADER([config.h])
 AC_PROG_CXX
 
 # Use PKGconfig to locate libcurl
-PKG_CHECK_MODULES([CURL], [curl])
+PKG_CHECK_MODULES([CURL], [libcurl])
 
 # Generate and output a config.status file.
 AC_OUTPUT

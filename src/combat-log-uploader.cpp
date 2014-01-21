@@ -22,7 +22,7 @@ namespace WoL
     {
     }
 
-    CombatLogUploader::upload()
+    bool CombatLogUploader::upload()
     {
         CURL *curl = NULL;
 
@@ -30,7 +30,7 @@ namespace WoL
 
         if (curl)
         {
-            curl_eay_cleanup(curl);
+            curl_easy_cleanup(curl);
         }
         else
         {
@@ -39,5 +39,6 @@ namespace WoL
              *       MLB 21/01/2014
              */
         }
+        return true;
     }
 }
