@@ -16,6 +16,20 @@
 namespace WoL
 {
     /**
+     * This class represents a single combat log line. It should not be
+     * constructed directly. Instead, a child class should be created from a
+     * combat log line.
+     */
+    class CombatLogLine
+    {
+        protected:
+            /**
+             * A basic constructor.
+             */
+            CombatLogLine();
+    };
+
+    /**
      * This class defines a structure that contains a parsed combat log.
      */
     class CombatLog
@@ -27,6 +41,10 @@ namespace WoL
         CombatLog();
 
     private:
+        std::list<CombatLogLine*> lines; /**< An ordered list of
+                                          *   CombatLogLine%s, representing
+                                          *   the contents of the combat log.
+                                          */
     };
 }
 
