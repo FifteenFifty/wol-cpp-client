@@ -16,6 +16,37 @@
 namespace WoL
 {
     /**
+     * This class represents a combat log Actor.
+     */
+    class Actor
+    {
+    public:
+        /**
+         * A basic constructor that initialises internal variables.
+         *
+         * @param guid      This Actor's GUID.
+         * @param name      The name of the Actor.
+         * @param flags     An integral representation of bit-flags that
+         *                  represent this Actor's state.
+         * @param raidFlags An integral reptresentation of bit-flags that
+         *                  represent the Actor's raid status.
+         */
+        Actor(uint64_t    guid,
+              std::string name,
+              uint32_t    flags,
+              uint32_t    raidFlags);
+
+    private:
+        uint64_t    guid;      /**< The Actor's GUID. */
+        std::string name;      /**< The name of the Actor. */
+        uint32_t    flags;     /**< An integral representation of bit-flags
+                                *   that represent this Actor's state. */
+        uint32_t    raidFlags; /**< An integral reptresentation of bit-flags
+                                *   that represent the Actor's raid status.
+                                */
+    };
+
+    /**
      * This class represents a single combat log line. It should not be
      * constructed directly. Instead, a child class should be created from a
      * combat log line.
