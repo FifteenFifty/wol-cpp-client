@@ -40,7 +40,7 @@ namespace WoL
     std::string Event::toString()
     {
         std::stringstream                toReturn;
-        std::list<std:string&>::iterator dataIt;
+        std::list<std::string>::iterator dataIt;
 
         toReturn << "<Event "
                  << id
@@ -67,6 +67,8 @@ namespace WoL
     }
 
     CombatLog::CombatLog()
+    :
+    lines()
     {
     }
 }

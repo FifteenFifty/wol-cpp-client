@@ -79,15 +79,14 @@ namespace WoL
         std::string toString();
 
     private:
-        uint32_t                id;       /** The identifier of this event.
-                                           */
-        std::string             &type;    /**< A reference to an element of
-                                           *   _uniqueStrings_, containing
-                                           *   the type of this event. */
-        std::list<std::string&> dataList; /**< A list of references to
-                                           *   strings containing the data
-                                           *   that has been assigned to this
-                                           *   event. */
+        uint32_t                id;      /** The identifier of this event.
+                                          */
+        std::string             type ;   /**< A reference to an element of
+                                          *   _uniqueStrings_, containing
+                                          *   the type of this event. */
+        std::list<std::string> dataList; /**< A list strings containing the
+                                          *   data that have been assigned to
+                                          *   this event. */
     };
 
     /**

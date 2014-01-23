@@ -50,8 +50,6 @@ namespace WoL
          * 6?: if (sr.nextIsString()) return com.wol3.client.data.BinaryCombatLog.Format.BASE
          */
 
-
-
         return CombatLog();
     }
 }

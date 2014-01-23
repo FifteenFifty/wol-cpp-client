@@ -1,0 +1,15 @@
+Makefile*
+aclocal.m4
+autom4te.cache/
+build/
+config.*
+configure
+depcomp
+install-sh
+m4/config.cache
+missing
+src/.deps/
+src/.dirstamp
+src/*.o
+stamp-h1
+wol-client
