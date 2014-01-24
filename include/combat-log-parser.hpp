@@ -27,29 +27,20 @@ namespace WoL
         /**
          * A basic constructor that initialises internal variables.
          *
-         * @param logDir The path to the World of Warcraft Logs directory.
+         * @param logFilePath The path to the World of Warcraft Log file.
          */
-        CombatLogParser(std::string logDir);
+        CombatLogParser(std::string logFilePath);
 
-        /*This method parses the combat log into a CombatLog object.
+        /**
+         * This method parses the combat log into a CombatLog object.
          *
          * @return A CombatLog object containing the parsed combat log.
          */
         CombatLog parseLog();
 
     private:
-        /**
-         * This method checks if the World of Warcraft Logs directory is
-         * valid.
-         *
-         * @return True if the logDir path is valid. False otherwise.
-         */
-        bool validLogDir();
-
-        std::string logDir;      /**< The path to the World of Warcraft Logs
-                                  *   directory. */
-        bool        logDirFound; /**< A boolean value indicating whether or
-                                  *   not the Logs directory is valid. */
+        std::string logFilePath; /**< The path to the World of Warcraft Log
+                                  *   file. */
     };
 }
 #endif

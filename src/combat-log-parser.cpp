@@ -7,24 +7,16 @@
  */
 
 #include <combat-log-parser.hpp>
+#include <fstream>
+#include <iostream>
 
 namespace WoL
 {
-    CombatLogParser::CombatLogParser(std::string logDir)
+    CombatLogParser::CombatLogParser(std::string logFilePath)
     :
-    logDir(logDir),
-    logDirFound(false)
+    logFilePath(logFilePath)
     {
-        logDirFound = validLogDir();
-    }
-
-    bool CombatLogParser::validLogDir()
-    {
-        /**
-         * @TODO This method is NYI and always returns true.
-         *       MLB 20/01/2014
-         */
-        return true;
+        std::cout<<"logFilePath: " << logFilePath << std::endl;
     }
 
     CombatLog CombatLogParser::parseLog()
@@ -49,6 +41,16 @@ namespace WoL
          * 10:
          * 6?: if (sr.nextIsString()) return com.wol3.client.data.BinaryCombatLog.Format.BASE
          */
+
+        CombatLog     toReturn;
+        std::ifstream logFile(logFilePath.c_str());
+
+        CombatLogLine *combatLogLinePtr = NULL;
+
+        for (std::string line; std::getline(logFile, line); )
+        {
+            combatLogLinePtr = CombatLogLine::factory(line);
+        }
 
         return CombatLog();
     }

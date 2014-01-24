@@ -8,18 +8,21 @@
 #include <iostream>
 #include <string>
 #include <argument-parser.hpp>
+#include <combat-log-parser.hpp>
+
+using namespace WoL;
 
 int main(int argc, char **argv)
 {
-    WoL::TypedArgumentProcessor<std::string> wowDirProcessor(
-                                                        "wowdir",
+    TypedArgumentProcessor<std::string> logFilePathProcessor(
+                                                        "logPath",
                                                         "The path to the "
                                                             "World of Warcraft "
-                                                            "directory.",
+                                                            "log file.",
                                                         "unset");
-    WoL::ArgumentParser::registerProcessor(&wowDirProcessor);
+    ArgumentParser::registerProcessor(&logFilePathProcessor);
 
-    WoL::TypedArgumentProcessor<std::string> usernameProcessor(
+    TypedArgumentProcessor<std::string> usernameProcessor(
                                                         "username",
                                                         "The username of "
                                                             "the World of "
@@ -28,9 +31,9 @@ int main(int argc, char **argv)
                                                             "logs are to be "
                                                             "uploaded.",
                                                         "username");
-    WoL::ArgumentParser::registerProcessor(&usernameProcessor);
+    ArgumentParser::registerProcessor(&usernameProcessor);
 
-    WoL::TypedArgumentProcessor<std::string> passwordProcessor(
+    TypedArgumentProcessor<std::string> passwordProcessor(
                                                         "password",
                                                         "The password of "
                                                             "the World of "
@@ -39,9 +42,12 @@ int main(int argc, char **argv)
                                                             "logs are to be "
                                                             "uploaded.",
                                                         "pa55word");
-    WoL::ArgumentParser::registerProcessor(&passwordProcessor);
+    ArgumentParser::registerProcessor(&passwordProcessor);
 
-    WoL::ArgumentParser::parseArguments(argc, argv);
+    ArgumentParser::parseArguments(argc, argv);
+
+    CombatLogParser parser(logFilePathProcessor.getValue());
+    parser.parseLog();
 
     return 0;
 }

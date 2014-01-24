@@ -66,9 +66,56 @@ namespace WoL
         return toReturn.str();
     }
 
+    CombatLogLine * CombatLogLine::factory(std::string line)
+    {
+        return NULL;
+        //TODO
+    }
+
+    CombatLogLine::CombatLogLine()
+    :
+    timestamp(),
+    source(NULL),
+    destination(NULL),
+    event(NULL)
+    {
+    }
+
+    CombatLogLine::CombatLogLine(const CombatLogLine &copy)
+    :
+    timestamp(),
+    source(NULL),
+    destination(NULL),
+    event(NULL)
+    {
+        //TODO - throw a ForbiddenMEthodCallException.. And create an
+        //error-handling mechanism
+    }
+
+    const CombatLogLine & CombatLogLine::operator=(const CombatLogLine ass)
+    {
+        //TODO - throw a ForbiddenMEthodCallException.. And create an
+        //error-handling mechanism
+    }
+
     CombatLog::CombatLog()
     :
     lines()
     {
+    }
+
+    void CombatLog::addLine(CombatLogLine *line)
+    {
+        if (line)
+        {
+            lines.push_back(line);
+        }
+        else
+        {
+            /**
+             * @TODO This error should be handled.
+             *       MLB 24/01/2014
+             */
+        }
     }
 }

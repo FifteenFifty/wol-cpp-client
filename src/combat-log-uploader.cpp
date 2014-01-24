@@ -12,17 +12,15 @@
 
 namespace WoL
 {
-    CombatLogUploader::CombatLogUploader(std::string      username,
-                                         std::string      passwordHash,
-                                         CombatLogParser &logParser)
+    CombatLogUploader::CombatLogUploader(std::string username,
+                                         std::string passwordHash)
     :
     username(username),
-    passwordHash(passwordHash),
-    logParser(logParser)
+    passwordHash(passwordHash)
     {
     }
 
-    bool CombatLogUploader::upload()
+    bool CombatLogUploader::upload(CombatLog &log)
     {
         CURL *curl = NULL;
 

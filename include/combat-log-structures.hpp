@@ -96,11 +96,48 @@ namespace WoL
      */
     class CombatLogLine
     {
-        protected:
-            /**
-             * A basic constructor.
-             */
-            CombatLogLine();
+    public:
+        /**
+         * This is a factory method. It takes a line of combat-log text and
+         * from it creates the appropriate CombatLogLine child, which is
+         * returned.
+         *
+         * @param line A line from the combat log.
+         *
+         * @return     A pointer to a child of CombatLogLine, containing the
+         *             information passed in _line_.
+         */
+        static CombatLogLine * factory(std::string line);
+
+    protected:
+        /**
+         * A basic constructor.
+         */
+        CombatLogLine();
+
+    private:
+        /**
+         * This copy constructor should not be called. If it is called, a
+         * ForbiddenMethodCallException is thrown.
+         *
+         * @param copy ignored.
+         */
+        CombatLogLine(const CombatLogLine &copy);
+
+        /**
+         * This assignment operator should not be used. If it is used, it
+         * throws a ForbiddenMethodCallException.
+         *
+         * @param ass Ignored.
+         *
+         * @return    Unreachable.
+         */
+        const CombatLogLine & operator=(const CombatLogLine ass);
+
+        std::string  timestamp;   /**< This line's timestamp. */
+        Actor       *source;      /**< A pointer to the source actor. */
+        Actor       *destination; /**< A pointer to the destination actor. */
+        Event       *event;       /**< The event that this line describes. */
     };
 
     /**
@@ -113,6 +150,14 @@ namespace WoL
          * A basic constructor.
          */
         CombatLog();
+
+        /**
+         * This method adds a line to the combat log.
+         *
+         * @param linePtr A pointer to a CombatLogLine that is to be added to
+         *                this combat log.
+         */
+        void addLine(CombatLogLine *line);
 
     private:
         std::list<CombatLogLine*> lines; /**< An ordered list of
