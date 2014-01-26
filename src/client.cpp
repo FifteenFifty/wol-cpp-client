@@ -9,6 +9,7 @@
 #include <string>
 #include <argument-parser.hpp>
 #include <combat-log-parser.hpp>
+#include <sstream>
 
 using namespace WoL;
 

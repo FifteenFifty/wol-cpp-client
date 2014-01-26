@@ -13,6 +13,7 @@
 #include <string>
 #include <list>
 #include <stdint.h>
+#include <sstream>
 
 /**
  * This namespace encapsulates all WoL client functionality.
@@ -42,6 +43,94 @@ namespace WoL
              *            that was passed in CSV format.
              */
             static std::list<std::string> parseCsv(std::string csv);
+
+            /**
+             * This method parses a string value as a float.
+             *
+             * @param value A string containing the value to be parsed.
+             *
+             * @return      A double containing the parsed value.
+             *
+             * @throws TODO
+             */
+            static double parseFloat(std::string value);
+
+            /**
+             * This method parses a string value as a hexadecimal number,
+             * which is returned as an integer of specified size.
+             *
+             * @param  value A string containing the value to be parsed.
+             * @tparam T     The type of value that is to be returned.
+             *
+             * @return       A T containing the parsed value.
+             *
+             * @throws TODO
+             */
+            template <typename T>
+            static T parseHex(std::string value);
+
+            /**
+             * This method parses a string value as an integral number,
+             * which is returned as an integer of specified size.
+             *
+             * @param  value A string containing the value to be parsed.
+             * @tparam T     The type of value that is to be returned.
+             *
+             * @return       A T containing the parsed value.
+             *
+             * @throws TODO
+             */
+            template <typename T>
+            static T parseInt(std::string value);
+
+            /**
+             * This method parses a string value as a combat log string.
+             *
+             * @param  value A string containing the value to be parsed.
+             *
+             * @return       A string containing the parsed value.
+             *
+             * @throws TODO
+             */
+            static std::string parseString(std::string value);
+        };
+
+        /**
+         * This class contains conversion utility methods.
+         */
+        class Conversion
+        {
+        public:
+            /**
+             * This method performs a lexical cast, making use of a
+             * stringstream to perform the cast.
+             *
+             * @param  toCast The value, of type S, being lexical cast.
+             * @tparam S      The source type.
+             * @tparam D      The destination type.
+             *
+             * @return        The value, of type D, resulting from performing
+             *                a lexical cast on _value.
+             *
+             * @throws TODO
+             */
+            template <typename S, typename D>
+            static D lexicalCast(S toCast)
+            {
+                /**
+                 * @TODO This lexical casting is performed very naively, and with no
+                 *       error-handling.
+                 *       MB 15/01/2014
+                 */
+                std::stringstream interpreter;
+                D                 value;
+
+                interpreter << toCast;
+
+                interpreter >> value;
+
+                return value;
+            }
         };
     }
 }

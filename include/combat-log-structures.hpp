@@ -12,6 +12,7 @@
 
 #include <utils.hpp>
 #include <list>
+#include <map>
 
 /**
  * This namespace encapsulates all WoL client functionality.
@@ -25,13 +26,35 @@ namespace WoL
     {
     public:
         /**
+         * This method creates, or retrieves (if already created), an Actor.
+         *
+         * @param guid      A string containing the Actor's GUID.
+         * @param name      A string containing the name of the Actor.
+         * @param flags     A string containing bit-flags that represent the
+         *                  Actor's state.
+         * @param raidFlags A string containing bit-flags representing the
+         *                  Actor's raid status.
+         *
+         * @return          A pointer to the requested Actor.
+         */
+        static Actor * factory(std::string guid,
+                               std::string name,
+                               std::string flags,
+                               std::string raidFlags);
+
+        /**
+         * A basic, empty, constructor.
+         */
+        Actor();
+
+        /**
          * A basic constructor that initialises internal variables.
          *
          * @param guid      This Actor's GUID.
          * @param name      The name of the Actor.
          * @param flags     An integral representation of bit-flags that
          *                  represent this Actor's state.
-         * @param raidFlags An integral reptresentation of bit-flags that
+         * @param raidFlags An integral representation of bit-flags that
          *                  represent the Actor's raid status.
          */
         Actor(uint64_t    guid,
@@ -40,13 +63,27 @@ namespace WoL
               uint32_t    raidFlags);
 
     private:
-        uint64_t    guid;      /**< The Actor's GUID. */
-        std::string name;      /**< The name of the Actor. */
-        uint32_t    flags;     /**< An integral representation of bit-flags
-                                *   that represent this Actor's state. */
-        uint32_t    raidFlags; /**< An integral representation of bit-flags
-                                *   that represent the Actor's raid status.
-                                */
+        static std::map<std::string, Actor> actors;    /**< A mapping of
+                                                        *   Actor information
+                                                        *   to Actor object,
+                                                        *   containing Actors
+                                                        *   that have already
+                                                        *   been created. */
+        uint64_t                            guid;      /**< The Actor's GUID.
+                                                        */
+        std::string                         name;      /**< The name of the
+                                                        *   Actor. */
+        uint32_t                            flags;     /**< An integral
+                                                        *   representation of
+                                                        *   bit-flags that
+                                                        *   represent this
+                                                        *   Actor's state. */
+        uint32_t                            raidFlags; /**< An integral
+                                                        *   representation of
+                                                        *   bit-flags that
+                                                        *   represent the
+                                                        *   Actor's raid
+                                                        *   status. */
     };
 
     /**
@@ -87,6 +124,48 @@ namespace WoL
         std::list<std::string> dataList; /**< A list strings containing the
                                           *   data that have been assigned to
                                           *   this event. */
+    };
+
+    /**
+     * This class contains subject information.
+     */
+    class SubjectInfo
+    {
+    public:
+        /**
+         * A basic constructor that initialises internal variables.
+         *
+         * @param guid           The GUID of the SubjectInfo.
+         * @param health         The subject's health.
+         * @param attackPower    The subject's attack power.
+         * @param spellPower     The subject's spell power.
+         * @param resoureType    The type of resource that the subject
+         *                       consumed.
+         * @param resourceAmount The amount of resource that the subject
+         *                       used.
+         * @param posX           The subject's X coordinate.
+         * @param posY           The subject's Y coordinate.
+         */
+        SubjectInfo(uint64_t guid,
+                    uint32_t health,
+                    uint32_t attackPower,
+                    uint32_t spellPower,
+                    uint32_t resourceType,
+                    uint32_t resourceAmaount,
+                    double   posX,
+                    double   posY);
+
+    private:
+        uint64_t guid;           /**< The GUID of the SubjectInfo. */
+        uint32_t health;         /**< The subject's health. */
+        uint32_t attackPower;    /**< The subject's attack power. */
+        uint32_t spellPower;     /**< The subject's spell power. */
+        uint32_t resourceType;   /**< The type of resource that the subject
+                                  *   consumed. */
+        uint32_t resourceAmount; /**< The amount of resource that the
+                                  *   subject used. */
+        double   posX;           /**< The subject's X coordinate. */
+        double   posY;           /**< The subject's Y coordinate. */
     };
 
     /**

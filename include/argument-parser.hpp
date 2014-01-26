@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <utils.hpp>
 
 /**
  * This namespace encapsulates all WoL client functionality.
@@ -118,16 +119,7 @@ namespace WoL
          */
         void parseValue(std::string argValue)
         {
-            /**
-             * @TODO This lexical casting is performed very naively, and with no
-             *       error-handling.
-             *       MB 15/01/2014
-             */
-            std::stringstream interpreter;
-
-            interpreter << argValue;
-
-            interpreter >> value;
+            value = Utils::Conversion::lexicalCast<std::string, T>(argValue);
         }
 
         /**
