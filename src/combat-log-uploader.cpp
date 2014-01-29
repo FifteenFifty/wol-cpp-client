@@ -22,6 +22,10 @@ namespace WoL
 
     bool CombatLogUploader::upload(CombatLog &log)
     {
+        /**
+         * The following is how the combat log looks to be uploaded:
+         * - An unsigned 64-bit number containing 0x200902131029 (padded with
+         *   leading zeroes)
         CURL *curl = NULL;
 
         curl = curl_easy_init();
