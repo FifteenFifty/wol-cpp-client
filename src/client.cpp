@@ -48,7 +48,9 @@ int main(int argc, char **argv)
     ArgumentParser::parseArguments(argc, argv);
 
     CombatLogParser parser(logFilePathProcessor.getValue());
-    parser.parseLog();
+    CombatLog log = parser.parseLog();
+
+    std::cout<<"Log: " << log.toString() << std::endl;
 
     return 0;
 }

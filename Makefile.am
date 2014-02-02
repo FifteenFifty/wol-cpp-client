@@ -1,5 +1,7 @@
 # A basic automake Makefile.
 
+ACLOCAL_AMFLAGS = -Im4
+
 bin_PROGRAMS = wol-client
 
 wol_client_SOURCES  = include/argument-parser.hpp\
@@ -14,5 +16,7 @@ wol_client_SOURCES  = include/argument-parser.hpp\
                       src/combat-log-uploader.cpp\
                       src/utils.cpp
 wol_client_CXXFLAGS = $(CURL_CXXFLAGS)\
+                      $(BOOST_REGEX_CXXFLAGS)\
                       '-Iinclude'
-wol_client_LDADD    = $(CURL_LIBS)
+wol_client_LDADD    = $(CURL_LIBS)\
+                      $(BOOST_REGEX_LIBS)

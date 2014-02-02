@@ -93,14 +93,20 @@ namespace WoL
     {
     public:
         /**
-         * A basic constructor that initialises internal variables.
-         *
-         * @param id   This Event's identifier.
-         * @param type A string containing the type of this Event.
-         * @param data A comma-separated list of arbitrary values that this
-         *             Event shall parse and contain.
+         * A basic, empty, constructor.
          */
-        Event(uint32_t id, std::string type, std::string data);
+        Event();
+
+        /**
+         * A basic factory method that sets up an Event from passed data and
+         * returns a pointer to it.
+         *
+         * @param type A string containing the type of this Event.
+         * @param data A list of arbitrary string values that this Event
+         *             shall parse and contain.
+         */
+        static Event * factory(std::string            type,
+                               std::list<std::string> data);
 
         /**
          * This method returns the data contained with this event as a
@@ -115,10 +121,32 @@ namespace WoL
          */
         std::string toString();
 
+    protected:
+        /**
+         * A basic constructor that initialises internal variables.
+         *
+         * @param id   The identifier of this event.
+         * @param type A string containing the type of this Event.
+         * @param data A list of arbitrary string values that this Event
+         *             shall parse and contain.
+         */
+        Event(uint32_t id, std::string type, std::list<std::string> data);
+
     private:
-        uint32_t                id;      /** The identifier of this event.
+        static std::map<std::string, Event> eventMap;  /**< A map of event
+                                                        *   key to Event
+                                                        *   object pointer,
+                                                        *   containing
+                                                        *   Event%s that
+                                                        *   have been
+                                                        *   created. */
+        static uint32_t                     currentId; /**< The identifier
+                                                        *   of the next new
+                                                        *   event. */
+
+        uint32_t               id;       /** The identifier of this event.
                                           */
-        std::string             type ;   /**< A reference to an element of
+        std::string            type ;    /**< A reference to an element of
                                           *   _uniqueStrings_, containing
                                           *   the type of this event. */
         std::list<std::string> dataList; /**< A list strings containing the
@@ -132,6 +160,32 @@ namespace WoL
     class SubjectInfo
     {
     public:
+        /**
+         * A basic factory method that sets up a SubjectInfo and returns a
+         * pointer to it. It is the responsibility of the caller to delete
+         * the returned pointer.
+         *
+         * @param guid           The GUID of the SubjectInfo.
+         * @param health         The subject's health.
+         * @param attackPower    The subject's attack power.
+         * @param spellPower     The subject's spell power.
+         * @param resoureType    The type of resource that the subject
+         *                       consumed.
+         * @param resourceAmount The amount of resource that the subject
+         *                       used.
+         * @param posX           The subject's X coordinate.
+         * @param posY           The subject's Y coordinate.
+         */
+        static SubjectInfo * factory(std::string guid,
+                                     std::string health,
+                                     std::string attackPower,
+                                     std::string spellPower,
+                                     std::string resourceType,
+                                     std::string resourceAmount,
+                                     std::string posX,
+                                     std::string posY);
+
+    protected:
         /**
          * A basic constructor that initialises internal variables.
          *
@@ -151,7 +205,7 @@ namespace WoL
                     uint32_t attackPower,
                     uint32_t spellPower,
                     uint32_t resourceType,
-                    uint32_t resourceAmaount,
+                    uint32_t resourceAmount,
                     double   posX,
                     double   posY);
 
@@ -188,11 +242,30 @@ namespace WoL
          */
         static CombatLogLine * factory(std::string line);
 
+        /**
+         * This method converts this CombatLogLine to a formatted string, and
+         * returns it.
+         *
+         * @return A formatted string containing the information stored in
+         *         this CombatLogLine.
+         */
+        std::string toString();
+
     protected:
         /**
          * A basic constructor.
+         * @param timestamp   This line's timestamp.
+         * @param source      A pointer to the source actor.
+         * @param destination A pointer to the destination actor.
+         * @param event       A pointer to the event that this line describes.
+         * @param info        A pointer to an object containing subject
+         *                    information relating to this line.
          */
-        CombatLogLine();
+        CombatLogLine(std::string  timestamp,   
+                      Actor       *source,      
+                      Actor       *destination, 
+                      Event       *event,       
+                      SubjectInfo *info);
 
     private:
         /**
@@ -217,6 +290,7 @@ namespace WoL
         Actor       *source;      /**< A pointer to the source actor. */
         Actor       *destination; /**< A pointer to the destination actor. */
         Event       *event;       /**< The event that this line describes. */
+        SubjectInfo *info;        /**< Subject information relating to this line. */
     };
 
     /**
@@ -237,6 +311,13 @@ namespace WoL
          *                this combat log.
          */
         void addLine(CombatLogLine *line);
+
+        /**
+         * This method converts the combat log to a formatted string.
+         *
+         * @return This combat log as a formatted string.
+         */
+        std::string toString();
 
     private:
         std::list<CombatLogLine*> lines; /**< An ordered list of
