@@ -48,6 +48,26 @@ namespace WoL
         Actor();
 
         /**
+         * This method converts the information stored within this Actor to a
+         * formatted string, and returns it.
+         *
+         * @return The information stored within this Actor as a formatted
+         *         string.
+         */
+        std::string toString();
+
+        /**
+         * A basic assignment operator.
+         *
+         * @param ass A reference to an Actor to which this Actor is being
+         *            assigned.
+         *
+         * @return    A reference to an Actor
+         */
+        Actor & operator=(const Actor &ass);
+
+    protected:
+        /**
          * A basic constructor that initialises internal variables.
          *
          * @param guid      This Actor's GUID.
@@ -185,6 +205,15 @@ namespace WoL
                                      std::string posX,
                                      std::string posY);
 
+        /**
+         * This method converts the information stored within this
+         * SubjectInfo to a formatted string, and returns it.
+         *
+         * @return A formatted string containing the information stored
+         *         within this SubjectInfo.
+         */
+        std::string toString();
+
     protected:
         /**
          * A basic constructor that initialises internal variables.
@@ -257,14 +286,15 @@ namespace WoL
          * @param timestamp   This line's timestamp.
          * @param source      A pointer to the source actor.
          * @param destination A pointer to the destination actor.
-         * @param event       A pointer to the event that this line describes.
+         * @param event       A pointer to the event that this line
+         *                    describes.
          * @param info        A pointer to an object containing subject
          *                    information relating to this line.
          */
-        CombatLogLine(std::string  timestamp,   
-                      Actor       *source,      
-                      Actor       *destination, 
-                      Event       *event,       
+        CombatLogLine(std::string  timestamp,
+                      Actor       *source,
+                      Actor       *destination,
+                      Event       *event,
                       SubjectInfo *info);
 
     private:

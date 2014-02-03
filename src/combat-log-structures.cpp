@@ -28,22 +28,41 @@ namespace WoL
 
         if (actors.find(actorKey) == actors.end())
         {
-            actors[actorKey] = Actor(StringUtils::parseHex<uint64_t>(guid),
-                                     StringUtils::parseString(name),
-                                     StringUtils::parseHex<uint32_t>(flags),
-                                     StringUtils::parseHex<uint32_t>(raidFlags));
+            Actor actor(StringUtils::parseHex<uint64_t>(guid),
+                        StringUtils::parseString(name),
+                        StringUtils::parseHex<uint32_t>(flags),
+                        StringUtils::parseHex<uint32_t>(raidFlags));
+
+            actors[actorKey] = actor;
         }
 
-        return &actors[actorKey];
+        return NULL;
     }
 
     Actor::Actor()
     :
-    guid(guid),
-    name(name),
-    flags(flags),
-    raidFlags(raidFlags)
+    guid(),
+    name(),
+    flags(),
+    raidFlags()
     {
+    }
+
+    std::string Actor::toString()
+    {
+        std::stringstream converter;
+
+        converter << guid << name << flags << raidFlags;
+
+        return converter.str();
+    }
+
+    Actor & Actor::operator=(const Actor &ass)
+    {
+        this->guid      = ass.guid;
+        this->name      = ass.name;
+        this->flags     = ass.flags;
+        this->raidFlags = ass.raidFlags;
     }
 
     Actor::Actor(uint64_t    guid,
@@ -148,6 +167,22 @@ namespace WoL
                                StringUtils::parseFloat(posY));
     }
 
+    std::string SubjectInfo::toString()
+    {
+        std::stringstream converter;
+
+        converter << guid
+                  << health
+                  << attackPower
+                  << spellPower
+                  << resourceType
+                  << resourceAmount
+                  << posX
+                  << posY;
+
+        return converter.str();
+    }
+
     SubjectInfo::SubjectInfo(uint64_t guid,
                              uint32_t health,
                              uint32_t attackPower,
@@ -199,6 +234,7 @@ namespace WoL
          */
         if (dateLength == std::string::npos)
         {
+            std::cout << "No date length found"<<std::endl;
             /**
              * @TODO This error should be handled.
              *       MLB 25/01/2014
@@ -244,7 +280,8 @@ namespace WoL
                                             *(infoListIt));
 
                 /* Remove the subjectInfo. */
-                boost::regex_replace(line, subjectInfo54Regex, "");
+                boost::regex remove54Regex("(?<=,)0x[0-9A-Fa-f]{16}(?:,-?\\d+){5}(?:,-?\\d*\\.\\d+){2},?");
+                line = boost::regex_replace(line, remove54Regex, "");
             }
         }
 
@@ -254,6 +291,7 @@ namespace WoL
         std::list<std::string>           data   = Utils::StringUtils::parseCsv(line);
         std::list<std::string>::iterator dataIt = data.begin();
 
+        dataIt = data.begin();
         consumable = data.size();
 
         if (dataIt == data.end())
@@ -263,6 +301,7 @@ namespace WoL
              *       should be handled.
              *       MLB 25/01/2014
              */
+            std::cout << "No data has been parsed :("<<std::endl;
             return NULL;
         }
 
@@ -274,8 +313,9 @@ namespace WoL
         //If the next item is a hex number, we've found an actor
         if (dataIt->substr(0, 2) == "0x")
         {
-            if (consumable >= 8)
+            if (consumable < 8)
             {
+            std::cout << "Not enough data for our actors :("<<std::endl;
                 /**
                  * @TODO There are not enough elements for the following
                  *       Actors to be created. This is an error.
@@ -306,7 +346,7 @@ namespace WoL
         }
 
         return new CombatLogLine(timestamp,
-                                 soure,
+                                 source,
                                  destination,
                                  event,
                                  info);
@@ -324,26 +364,31 @@ namespace WoL
         }
         if (destination)
         {
-            toReturn += destination.toString();
+            toReturn += destination->toString();
         }
         if (event)
         {
-            toReturn += event.toString();
+            toReturn += event->toString();
         }
         if (info)
         {
-            toReturn += info.toString();
+            toReturn += info->toString();
         }
 
         return toReturn;
     }
 
-    CombatLogLine::CombatLogLine()
+    CombatLogLine::CombatLogLine(std::string  timestamp,
+                                 Actor       *source,
+                                 Actor       *destination,
+                                 Event       *event,
+                                 SubjectInfo *info)
     :
-    timestamp(),
-    source(NULL),
-    destination(NULL),
-    event(NULL)
+    timestamp(timestamp),
+    source(source),
+    destination(destination),
+    event(event),
+    info(info)
     {
     }
 
@@ -352,7 +397,8 @@ namespace WoL
     timestamp(),
     source(NULL),
     destination(NULL),
-    event(NULL)
+    event(NULL),
+    info(NULL)
     {
         //TODO - throw a ForbiddenMEthodCallException.. And create an
         //error-handling mechanism
