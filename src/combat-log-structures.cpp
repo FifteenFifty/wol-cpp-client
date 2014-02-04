@@ -36,7 +36,7 @@ namespace WoL
             actors[actorKey] = actor;
         }
 
-        return NULL;
+        return &actors[actorKey];
     }
 
     Actor::Actor()
@@ -324,15 +324,22 @@ namespace WoL
                 return NULL;
             }
 
-            source = Actor::factory(*(dataIt++),
-                                    *(dataIt++),
-                                    *(dataIt++),
-                                    *(dataIt++));
+            /* Due to the order of argument evaluation being undefined in the
+             * C++ standard, the iterator is dereferenced into intermediary
+             * strings before being passed into the factory. */
+            std::string guid      = *(dataIt++);
+            std::string name      = *(dataIt++);
+            std::string flags     = *(dataIt++);
+            std::string raidFlags = *(dataIt++);
 
-            destination = Actor::factory(*(dataIt++),
-                                         *(dataIt++),
-                                         *(dataIt++),
-                                         *(dataIt++));
+            source = Actor::factory(guid, name, flags, raidFlags);
+
+            guid      = *(dataIt++);
+            name      = *(dataIt++);
+            flags     = *(dataIt++);
+            raidFlags = *(dataIt++);
+
+            destination = Actor::factory(guid, name, flags, raidFlags);
             consumable -= 8;
         }
 
@@ -354,28 +361,43 @@ namespace WoL
 
     std::string CombatLogLine::toString()
     {
-        std::string toReturn;
+        std::stringstream toReturn;
 
-        toReturn += timestamp;
+        toReturn << timestamp;
 
-        if (source)
+        if (source && destination)
         {
-            toReturn += source->toString();
-        }
-        if (destination)
-        {
-            toReturn += destination->toString();
+            toReturn << (char) 0x00
+                     << (char) 0xff
+                     << (char) 0x00
+                     << (char) 0xff
+                     << (char) 0x00
+                     << (char) 0xff
+                     << (char) 0x00
+                     << (char) 0xff
+                     << (char) 0x00;
+            toReturn << source->toString();
+            toReturn << destination->toString();
         }
         if (event)
         {
-            toReturn += event->toString();
+            toReturn << (char) 0xae
+                     << (char) 0xae
+                     << (char) 0xae
+                     << (char) 0xae
+                     << (char) 0xae
+                     << (char) 0xae
+                     << (char) 0xae
+                     << (char) 0xae
+                     << (char) 0xae;
+            toReturn << event->toString();
         }
         if (info)
         {
-            toReturn += info->toString();
+            toReturn << info->toString();
         }
 
-        return toReturn;
+        return toReturn.str();
     }
 
     CombatLogLine::CombatLogLine(std::string  timestamp,

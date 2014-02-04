@@ -50,7 +50,7 @@ int main(int argc, char **argv)
     CombatLogParser parser(logFilePathProcessor.getValue());
     CombatLog log = parser.parseLog();
 
-    std::cout<<"Log: " << log.toString() << std::endl;
+    std::cout<< log.toString() << std::endl;
 
     return 0;
 }

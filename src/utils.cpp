@@ -107,7 +107,7 @@ namespace WoL
         template uint64_t StringUtils::parseInt(std::string value);
         template uint32_t StringUtils::parseInt(std::string value);
 
-        std::string StringUtils::parseString(std::string(value))
+        std::string StringUtils::parseString(std::string value)
         {
             if (value.at(0) != '"' || value.at(value.length() - 1) != '"')
             {
@@ -115,6 +115,10 @@ namespace WoL
                  * @TODO Not a valid quoted string. Handle this error.
                  *       MLB 26/01/2014
                  */
+                std::cout << "Utils error: "
+                          << value
+                          << "is not a valid quoted string"
+                          << std::endl;
                 return "";
             }
 

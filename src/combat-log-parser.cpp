@@ -16,7 +16,6 @@ namespace WoL
     :
     logFilePath(logFilePath)
     {
-        std::cout<<"logFilePath: " << logFilePath << std::endl;
     }
 
     CombatLog CombatLogParser::parseLog()
@@ -50,8 +49,9 @@ namespace WoL
         for (std::string line; std::getline(logFile, line); )
         {
             combatLogLinePtr = CombatLogLine::factory(line);
+            toReturn.addLine(combatLogLinePtr);
         }
 
-        return CombatLog();
+        return toReturn;
     }
 }
