@@ -48,15 +48,6 @@ namespace WoL
         Actor();
 
         /**
-         * This method converts the information stored within this Actor to a
-         * formatted string, and returns it.
-         *
-         * @return The information stored within this Actor as a formatted
-         *         string.
-         */
-        std::string toString();
-
-        /**
          * A basic assignment operator.
          *
          * @param ass A reference to an Actor to which this Actor is being
@@ -128,19 +119,6 @@ namespace WoL
         static Event * factory(std::string            type,
                                std::list<std::string> data);
 
-        /**
-         * This method returns the data contained with this event as a
-         * formatted string. The string returned shall be of the following
-         * form:
-         * <Event _id_, _type_, [data[1], data[2], ...]>
-         * where data[x] refers to the elements within the ordered list of
-         * Event data.
-         *
-         * @return A formatted string containing the data contained within
-         *         this Event.
-         */
-        std::string toString();
-
     protected:
         /**
          * A basic constructor that initialises internal variables.
@@ -205,15 +183,6 @@ namespace WoL
                                      std::string posX,
                                      std::string posY);
 
-        /**
-         * This method converts the information stored within this
-         * SubjectInfo to a formatted string, and returns it.
-         *
-         * @return A formatted string containing the information stored
-         *         within this SubjectInfo.
-         */
-        std::string toString();
-
     protected:
         /**
          * A basic constructor that initialises internal variables.
@@ -270,15 +239,6 @@ namespace WoL
          *             information passed in _line_.
          */
         static CombatLogLine * factory(std::string line);
-
-        /**
-         * This method converts this CombatLogLine to a formatted string, and
-         * returns it.
-         *
-         * @return A formatted string containing the information stored in
-         *         this CombatLogLine.
-         */
-        std::string toString();
 
     protected:
         /**
@@ -341,13 +301,6 @@ namespace WoL
          *                this combat log.
          */
         void addLine(CombatLogLine *line);
-
-        /**
-         * This method converts the combat log to a formatted string.
-         *
-         * @return This combat log as a formatted string.
-         */
-        std::string toString();
 
     private:
         std::list<CombatLogLine*> lines; /**< An ordered list of

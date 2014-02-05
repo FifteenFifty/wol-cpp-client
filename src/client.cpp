@@ -10,6 +10,8 @@
 #include <argument-parser.hpp>
 #include <combat-log-parser.hpp>
 #include <sstream>
+#include <combat-log-formatter.hpp>
+#include <wol-combat-log-formatter.hpp>
 
 using namespace WoL;
 
@@ -50,7 +52,15 @@ int main(int argc, char **argv)
     CombatLogParser parser(logFilePathProcessor.getValue());
     CombatLog log = parser.parseLog();
 
-    std::cout<< log.toString() << std::endl;
+    CombatLogFormatter *formatter = NULL;
+
+    formatter = new WolCombatLogFormatter();
+
+    std::string formattedLog = formatter->formatLog(log);
+
+    delete formatter;
+
+    std::cout<<formattedLog << std::endl;
 
     return 0;
 }

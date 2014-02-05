@@ -48,15 +48,6 @@ namespace WoL
     {
     }
 
-    std::string Actor::toString()
-    {
-        std::stringstream converter;
-
-        converter << guid << name << flags << raidFlags;
-
-        return converter.str();
-    }
-
     Actor & Actor::operator=(const Actor &ass)
     {
         this->guid      = ass.guid;
@@ -119,35 +110,6 @@ namespace WoL
         //TODO - Parse the data list and save it.
     }
 
-    std::string Event::toString()
-    {
-        std::stringstream                toReturn;
-        std::list<std::string>::iterator dataIt;
-
-        toReturn << "<Event "
-                 << id
-                 << ", "
-                 << type
-                 << ", [";
-
-        dataIt = dataList.begin();
-
-        if (dataIt != dataList.end())
-        {
-            toReturn << *(dataIt++);
-        }
-
-        for (; dataIt != dataList.end(); ++dataIt)
-        {
-            toReturn << ", "
-                     << *dataIt;
-        }
-
-        toReturn << "]>";
-
-        return toReturn.str();
-    }
-
     SubjectInfo * SubjectInfo::factory(std::string guid,
                                        std::string health,
                                        std::string attackPower,
@@ -165,22 +127,6 @@ namespace WoL
                                StringUtils::parseInt<uint32_t>(resourceAmount),
                                StringUtils::parseFloat(posX),
                                StringUtils::parseFloat(posY));
-    }
-
-    std::string SubjectInfo::toString()
-    {
-        std::stringstream converter;
-
-        converter << guid
-                  << health
-                  << attackPower
-                  << spellPower
-                  << resourceType
-                  << resourceAmount
-                  << posX
-                  << posY;
-
-        return converter.str();
     }
 
     SubjectInfo::SubjectInfo(uint64_t guid,
@@ -359,47 +305,6 @@ namespace WoL
                                  info);
     }
 
-    std::string CombatLogLine::toString()
-    {
-        std::stringstream toReturn;
-
-        toReturn << timestamp;
-
-        if (source && destination)
-        {
-            toReturn << (char) 0x00
-                     << (char) 0xff
-                     << (char) 0x00
-                     << (char) 0xff
-                     << (char) 0x00
-                     << (char) 0xff
-                     << (char) 0x00
-                     << (char) 0xff
-                     << (char) 0x00;
-            toReturn << source->toString();
-            toReturn << destination->toString();
-        }
-        if (event)
-        {
-            toReturn << (char) 0xae
-                     << (char) 0xae
-                     << (char) 0xae
-                     << (char) 0xae
-                     << (char) 0xae
-                     << (char) 0xae
-                     << (char) 0xae
-                     << (char) 0xae
-                     << (char) 0xae;
-            toReturn << event->toString();
-        }
-        if (info)
-        {
-            toReturn << info->toString();
-        }
-
-        return toReturn.str();
-    }
-
     CombatLogLine::CombatLogLine(std::string  timestamp,
                                  Actor       *source,
                                  Actor       *destination,
@@ -451,28 +356,5 @@ namespace WoL
              *       MLB 24/01/2014
              */
         }
-    }
-
-    std::string CombatLog::toString()
-    {
-        std::list<CombatLogLine*>::iterator lineIt;
-        std::string                         toReturn;
-
-        for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
-        {
-            if (!*lineIt)
-            {
-                /**
-                 * @TODO A NULL CombatLogLine has been encountered! Handle
-                 *       this error.
-                 *       MLB 02/02/2014
-                 */
-                return "ERROR";
-            }
-
-            toReturn += (*lineIt)->toString();
-        }
-
-        return toReturn;
     }
 }
