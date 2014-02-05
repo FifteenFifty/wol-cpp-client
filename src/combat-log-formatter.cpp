@@ -10,7 +10,7 @@
 
 namespace WoL
 {
-    ~CombatLogFormatter::CombatLogFormatter()
+    CombatLogFormatter::~CombatLogFormatter()
     {
     }
 }

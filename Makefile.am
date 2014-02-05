@@ -13,6 +13,7 @@ wol_client_SOURCES  = include/argument-parser.hpp\
                       include/utils.hpp\
                       src/argument-parser.cpp\
                       src/client.cpp\
+                      src/combat-log-formatter.cpp\
                       src/combat-log-parser.cpp\
                       src/combat-log-structures.cpp\
                       src/combat-log-uploader.cpp\
