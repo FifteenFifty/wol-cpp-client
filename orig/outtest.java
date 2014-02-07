@@ -2,7 +2,10 @@ class outtest
 {
     public static void main(String[] args)
     {
-        String line = "1/12 15:17:35.006  SPELL_PERIODIC_HEAL,0x04800000035FEC5C,\"Flur-SteamwheedleCartel\",0x514,0x0,0x0480000002A3DFCE,\"Quickening\",0x40511,0x0,77489,\"Echo of Light\",0x2,0x0000000000000000,0,0,0,0,0,0.00,0.00,2703,2703,0,nil";
+        String line1 = "1/12 15:17:35.006  SPELL_PERIODIC_HEAL,0x04800000035FEC5C,\"Flur-SteamwheedleCartel\",0x514,0x0,0x0480000002A3DFCE,\"Quickening\",0x40511,0x0,77489,\"Echo of Light\",0x2,0x0000000000000000,0,0,0,0,0,0.00,0.00,2703,2703,0,nil";
+        String line2 = "1/12 15:17:35.253  SPELL_CAST_SUCCESS,0x040000000409534D,\"Modrejtom-Drak'thul\",0x40514,0x0,0xF151175000000065,\"Siegecrafter Blackfuse\",0x10a48,0x0,102355,\"Faerie Swarm\",0x8,0x0000000000000000,0,0,0,0,0,0.00,0.00";
+        String line3 = "1/12 15:17:35.334  SPELL_SUMMON,0x04000000043BFCF4,\"Trailing-KulTiras\",0x512,0x0,0xF1303C4E000001BB,\"Greater Fire Elemental\",0xa28,0x0,117663,\"Fire Elemental Totem\",0x4";
+        String line4 = "1/12 15:17:35.334  SPELL_CAST_SUCCESS,0x04000000043BFCF4,\"Trailing-KulTiras\",0x512,0x0,0x0000000000000000,nil,0x80000000,0x80000000,2894,\"Fire Elemental Totem\",0x4,0x0000000000000000,0,0,0,0,0,0.00,0.00";
 
         com.wol3.client.data.BinaryCombatLog        combatLog = new com.wol3.client.data.BinaryCombatLog();
         com.wol3.client.data.TextualCombatLogParser parser = new com.wol3.client.data.TextualCombatLogParser();
@@ -13,7 +16,10 @@ class outtest
 
         try
         {
-            parser.parseLine(combatLog, line, 1);
+            parser.parseLine(combatLog, line1, 1);
+            parser.parseLine(combatLog, line2, 2);
+            parser.parseLine(combatLog, line3, 3);
+            parser.parseLine(combatLog, line4, 4);
             combatLog.finish();
 
             /* The following is copied code from     BinaryCombatLog::public void
