@@ -16,24 +16,33 @@ using namespace WoL::Utils;
 namespace WoL
 {
     std::map<std::string, Actor> Actor::actors;
+    std::list<Actor*>            Actor::actorList;
     std::map<std::string, Event> Event::eventMap;
-    uint32_t                     Event::currentId;
+    uint32_t                     Actor::lastIndex = 0;
+    uint32_t                     Event::currentId = 0;
 
     Actor * Actor::factory(std::string guid,
                            std::string name,
                            std::string flags,
                            std::string raidFlags)
     {
+        if (name == "nil")
+        {
+            return NULL;
+        }
+
         std::string actorKey = guid + flags + raidFlags;
 
         if (actors.find(actorKey) == actors.end())
         {
-            Actor actor(StringUtils::parseHex<uint64_t>(guid),
+            Actor actor(lastIndex++,
+                        StringUtils::parseHex<uint64_t>(guid),
                         StringUtils::parseString(name),
                         StringUtils::parseHex<uint32_t>(flags),
                         StringUtils::parseHex<uint32_t>(raidFlags));
 
             actors[actorKey] = actor;
+            actorList.push_back(&actors[actorKey]);
         }
 
         return &actors[actorKey];
@@ -41,6 +50,7 @@ namespace WoL
 
     Actor::Actor()
     :
+    index(0),
     guid(),
     name(),
     flags(),
@@ -50,17 +60,50 @@ namespace WoL
 
     Actor & Actor::operator=(const Actor &ass)
     {
+        this->index     = ass.index;
         this->guid      = ass.guid;
         this->name      = ass.name;
         this->flags     = ass.flags;
         this->raidFlags = ass.raidFlags;
     }
 
-    Actor::Actor(uint64_t    guid,
+    std::list<Actor*> Actor::getActors()
+    {
+        return actorList;
+    }
+
+    uint32_t Actor::getIndex()
+    {
+        return index;
+    }
+
+    uint64_t Actor::getGuid()
+    {
+        return guid;
+    }
+
+    std::string Actor::getName()
+    {
+        return name;
+    }
+
+    uint32_t Actor::getFlags()
+    {
+        return flags;
+    }
+
+    uint32_t Actor::getRaidFlags()
+    {
+        return raidFlags;
+    }
+
+    Actor::Actor(uint32_t    index,
+                 uint64_t    guid,
                  std::string name,
                  uint32_t    flags,
                  uint32_t    raidFlags)
     :
+    index(index),
     guid(guid),
     name(name),
     flags(flags),
@@ -278,12 +321,17 @@ namespace WoL
             std::string flags     = *(dataIt++);
             std::string raidFlags = *(dataIt++);
 
+            std::cout<<"guid: " << guid << std::endl;
+            std::cout<<"Name:" << name << std::endl;
+
             source = Actor::factory(guid, name, flags, raidFlags);
 
             guid      = *(dataIt++);
             name      = *(dataIt++);
             flags     = *(dataIt++);
             raidFlags = *(dataIt++);
+            std::cout<<"guid: " << guid << std::endl;
+            std::cout<<"Name:" << name << std::endl;
 
             destination = Actor::factory(guid, name, flags, raidFlags);
             consumable -= 8;
@@ -356,5 +404,10 @@ namespace WoL
              *       MLB 24/01/2014
              */
         }
+    }
+
+    std::list<Actor*> CombatLog::getActors()
+    {
+        return Actor::getActors();
     }
 }

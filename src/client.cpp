@@ -56,11 +56,13 @@ int main(int argc, char **argv)
 
     formatter = new WolCombatLogFormatter();
 
-    std::string formattedLog = formatter->formatLog(log);
+    FormattedCombatLog *formattedLog = formatter->formatLog(log);
 
     delete formatter;
 
-    std::cout<<formattedLog << std::endl;
+    formattedLog->toTerminal();
+
+    delete formattedLog;
 
     return 0;
 }

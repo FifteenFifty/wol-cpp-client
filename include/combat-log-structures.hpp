@@ -57,10 +57,55 @@ namespace WoL
          */
         Actor & operator=(const Actor &ass);
 
+        /**
+         * This method returns a list of pointers to every Actor that took
+         * part in the combat log.
+         *
+         * @return A list of pointers to every Actor that took part in the
+         *         combat log.
+         */
+        static std::list<Actor*> getActors();
+
+        /**
+         * This method returns the Actor's index.
+         *
+         * @return The Actor's index.
+         */
+        uint32_t getIndex();
+
+        /**
+         * This method returns the Actor's GUID.
+         *
+         * @return The Actor's GUID.
+         */
+        uint64_t getGuid();
+
+        /**
+         * This method returns the name of the Actor.
+         *
+         * @return The name of the Actor.
+         */
+        std::string getName();
+
+        /**
+         * This method returns the Actor's flags.
+         *
+         * @return The Actor's flags.
+         */
+        uint32_t getFlags();
+
+        /**
+         * This method returns the Actor's raid flags.
+         *
+         * @return The Actor's raid flags.
+         */
+        uint32_t getRaidFlags();
+
     protected:
         /**
          * A basic constructor that initialises internal variables.
          *
+         * @param index     This actor's index.
          * @param guid      This Actor's GUID.
          * @param name      The name of the Actor.
          * @param flags     An integral representation of bit-flags that
@@ -68,7 +113,8 @@ namespace WoL
          * @param raidFlags An integral representation of bit-flags that
          *                  represent the Actor's raid status.
          */
-        Actor(uint64_t    guid,
+        Actor(uint32_t    index,
+              uint64_t    guid,
               std::string name,
               uint32_t    flags,
               uint32_t    raidFlags);
@@ -80,6 +126,20 @@ namespace WoL
                                                         *   containing Actors
                                                         *   that have already
                                                         *   been created. */
+        static std::list<Actor*>            actorList; /**< A list of Actor
+                                                        *   pointers
+                                                        *   containing Actors
+                                                        *   in the order in
+                                                        *   which they were
+                                                        *   encountered. */
+        static uint32_t                     lastIndex; /**< The index of the
+                                                        *   last-added actor
+                                                        *   within the actors
+                                                        *   map. */
+        uint32_t                            index;     /**< The index of this
+                                                        *   current actor
+                                                        *   within the actors
+                                                        *   map. */
         uint64_t                            guid;      /**< The Actor's GUID.
                                                         */
         std::string                         name;      /**< The name of the
@@ -118,6 +178,15 @@ namespace WoL
          */
         static Event * factory(std::string            type,
                                std::list<std::string> data);
+
+        /**
+         * This method returns a list containing pointers to every Event that
+         * took place in the combat log.
+         *
+         * @return A list containing pointers to every Event that took place
+         *         in the combat log.
+         */
+        static std::list<Event*> getEvents();
 
     protected:
         /**
@@ -301,6 +370,15 @@ namespace WoL
          *                this combat log.
          */
         void addLine(CombatLogLine *line);
+
+        /**
+         * This method returns a list of unique actors present within the
+         * Combat Log.
+         *
+         * @return A list pointers to Actor objects representing every Actor
+         *         that took part in the combat log.
+         */
+        std::list<Actor*> getActors();
 
     private:
         std::list<CombatLogLine*> lines; /**< An ordered list of

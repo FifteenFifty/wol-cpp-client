@@ -109,6 +109,11 @@ namespace WoL
 
         std::string StringUtils::parseString(std::string value)
         {
+            if (value == "nil")
+            {
+                return value;
+            }
+
             if (value.at(0) != '"' || value.at(value.length() - 1) != '"')
             {
                 /**
