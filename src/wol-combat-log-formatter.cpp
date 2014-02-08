@@ -134,8 +134,8 @@ namespace WoL
          *      - aeaeaeaeaeaeaeae MAGIC NUMBER
          *      - The index from which Events are being sent
          *      - Event pool:
-         */          -
-        std::list<Event*>           events     = combatLog.getEventss();
+         */
+        std::list<Event*>           events     = combatLog.getEvents();
         uint32_t                    eventCount = events.size();
         std::list<Event*>::iterator eventIt;
         FormattedCombatLog          formattedFragment;
@@ -155,36 +155,6 @@ namespace WoL
             {
                 switch (i)
                 {
-                    case 0:
-                        formattedFragment.add((uint16_t) (*eventIt)->getName().length());
-                        formattedFragment.add((*eventIt)->getName());
-                        break;
-
-                    case 1:
-                        formattedFragment.add((*eventIt)->getGuid());
-                        break;
-
-                    case 2:
-                        formattedFragment.add((*eventIt)->getIndex());
-                        break;
-
-                    case 3:
-                        formattedFragment.add((*eventIt)->getFlags());
-                        break;
-
-                    case 4:
-                        formattedFragment.add((*eventIt)->getRaidFlags());
-                        break;
-
-                    default:
-                        /**
-                         * @TODO This is an error condition and should be
-                         *       handled as such.
-                         *       MLB 08/02/2014
-                         */
-                        std::cerr << "Reached default case of Event "
-                                     "formatting."
-                                  << std::endl;
                 }
             }
 

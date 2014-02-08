@@ -207,6 +207,12 @@ namespace WoL
                                                         *   Event%s that
                                                         *   have been
                                                         *   created. */
+        static std::list<Event*>            eventList; /**< A list of
+                                                        *   pointers to
+                                                        *   Events in the
+                                                        *   order that they
+                                                        *   were encountered.
+                                                        *   */
         static uint32_t                     currentId; /**< The identifier
                                                         *   of the next new
                                                         *   event. */
@@ -372,13 +378,22 @@ namespace WoL
         void addLine(CombatLogLine *line);
 
         /**
-         * This method returns a list of unique actors present within the
+         * This method returns a list of unique Actor%s present within the
          * Combat Log.
          *
          * @return A list pointers to Actor objects representing every Actor
          *         that took part in the combat log.
          */
         std::list<Actor*> getActors();
+
+        /**
+         * This method returns a list of unique Events present within the
+         * Combat Log.
+         *
+         * @return A list pointers to Events objects representing every Event
+         *         that happened in the combat log.
+         */
+        std::list<Event*> getEvents();
 
     private:
         std::list<CombatLogLine*> lines; /**< An ordered list of

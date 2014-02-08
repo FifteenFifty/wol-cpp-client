@@ -18,6 +18,7 @@ namespace WoL
     std::map<std::string, Actor> Actor::actors;
     std::list<Actor*>            Actor::actorList;
     std::map<std::string, Event> Event::eventMap;
+    std::list<Event*>            Event::eventList;
     uint32_t                     Actor::lastIndex = 0;
     uint32_t                     Event::currentId = 0;
 
@@ -119,8 +120,11 @@ namespace WoL
         Event                                  *toReturn  = NULL;
         std::string                             keyString = type;
 
+        std::cout<<"Type: " << type << std::endl;
+
         for (dataIt = data.begin(); dataIt != data.end(); ++dataIt)
         {
+        std::cout<<"    Element: " << *dataIt << std::endl;
             keyString += *dataIt;
         }
 
@@ -130,6 +134,11 @@ namespace WoL
         }
 
         return &eventMap[keyString];
+    }
+
+    std::list<Event*> Event::getEvents()
+    {
+        return eventList;
     }
 
     Event::Event()
@@ -409,5 +418,10 @@ namespace WoL
     std::list<Actor*> CombatLog::getActors()
     {
         return Actor::getActors();
+    }
+
+    std::list<Event*> CombatLog::getEvents()
+    {
+        return Event::getEvents();
     }
 }
