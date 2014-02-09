@@ -14,6 +14,7 @@
 #include <list>
 #include <stdint.h>
 #include <sstream>
+#include <boost/lexical_cast.hpp>
 
 /**
  * This namespace encapsulates all WoL client functionality.
@@ -113,23 +114,12 @@ namespace WoL
              *                a lexical cast on _value.
              *
              * @throws TODO
+             * @throws Currently throws a boost::bad_lexical_cast on error.
              */
             template <typename S, typename D>
             static D lexicalCast(S toCast)
             {
-                /**
-                 * @TODO This lexical casting is performed very naively, and with no
-                 *       error-handling.
-                 *       MB 15/01/2014
-                 */
-                std::stringstream interpreter;
-                D                 value;
-
-                interpreter << toCast;
-
-                interpreter >> value;
-
-                return value;
+                return boost::lexical_cast<D, S>(toCast);
             }
         };
     }

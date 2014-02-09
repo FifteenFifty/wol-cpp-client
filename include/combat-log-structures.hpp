@@ -188,6 +188,29 @@ namespace WoL
          */
         static std::list<Event*> getEvents();
 
+        /**
+         * This method returns the identifier of this event.
+         *
+         * @return The identifier of this event.
+         */
+        uint32_t getId();
+
+        /**
+         * This method returns a string containing the type of this event.
+         *
+         * @return A string containing the type of this event.
+         */
+        std::string getType();
+
+        /**
+         * This method returns a list strings containing the data that have
+         * been assigned to this event.
+         *
+         * @return This method returns a list strings containing the data
+         *         that have been assigned to this event.
+         */
+        std::list<std::string> getData();
+
     protected:
         /**
          * A basic constructor that initialises internal variables.
@@ -219,8 +242,7 @@ namespace WoL
 
         uint32_t               id;       /** The identifier of this event.
                                           */
-        std::string            type ;    /**< A reference to an element of
-                                          *   _uniqueStrings_, containing
+        std::string            type ;    /**< A string containing
                                           *   the type of this event. */
         std::list<std::string> dataList; /**< A list strings containing the
                                           *   data that have been assigned to

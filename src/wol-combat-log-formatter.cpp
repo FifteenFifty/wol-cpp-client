@@ -34,6 +34,7 @@ namespace WoL
 
         addMagicNumber(log);
         addActorInfo(combatLog, log);
+        addEventInfo(combatLog, log);
 
         return log;
     }
@@ -134,36 +135,211 @@ namespace WoL
          *      - aeaeaeaeaeaeaeae MAGIC NUMBER
          *      - The index from which Events are being sent
          *      - Event pool:
+         *          - For each type of int (u8, u16, u32)
+         *              - The number of integers present that fit into that
+         *                data type but none below it
+         *              - The integers in encountered-order
+         *          -
+         *
          */
-        std::list<Event*>           events     = combatLog.getEvents();
-        uint32_t                    eventCount = events.size();
-        std::list<Event*>::iterator eventIt;
-        FormattedCombatLog          formattedFragment;
+        std::list<Event*>                events     = combatLog.getEvents();
+        uint32_t                         eventCount = events.size();
+        std::list<Event*>::iterator      eventIt;
+        FormattedCombatLog               formattedFragment;
+        std::list<std::string>           eventDataList;
+        std::list<std::string>::iterator eventDataListIt;
+
+        uint32_t numericData;
+
+        std::list<uint8_t>                        byteList;
+        std::list<uint16_t>                       shortList;
+        std::list<uint32_t>                       intList;
+        uint16_t                                  stringIndex = 0;
+        std::map<uint16_t, std::string>           stringMap;
+        std::map<uint16_t, std::string>::iterator stringMapIt;
+        std::list<uint16_t>                       stringIndexList;
+        uint8_t                                   eventTypeIndex = 0;
+        std::map<uint8_t, std::string>            eventTypeMap;
+        std::map<uint8_t, std::string>::iterator  eventTypeMapIt;
+        std::list<uint8_t>                        eventTypeIndexList;
+
+        /* The magic string seems to notify WoL of the data that is contained
+         * within an element */
+        std::list<std::string>                   magicStringList;
+        std::string                              magicString;
 
         formattedLog->add(0xaeaeaeaeaeaeaeae);
 
         // The start index. It is currently zero
         formattedLog->add((uint32_t) 0);
 
-        for (int i = 0; i <= 4; ++i)
+        for (eventIt = events.begin(); eventIt != events.end(); ++eventIt)
         {
-            formattedFragment.clear();
+            eventDataList = (*eventIt)->getData();
+            magicString   = "";
 
-            formattedFragment.add(eventCount);
-
-            for (eventIt = events.begin(); eventIt != events.end(); ++eventIt)
+            for (eventDataListIt = eventDataList.begin();
+                 eventDataListIt != eventDataList.end();
+                 ++eventDataListIt)
             {
-                switch (i)
+                //TODO - A better 'nil' check would be super useful
+                if (*eventDataListIt == "nil")
                 {
+                    magicString += "n";
+                    continue;
+                }
+
+                try
+                {
+                    numericData = Utils::Conversion::lexicalCast<std::string,
+                                                                 uint32_t>(
+                                                        *eventDataListIt);
+                }
+                catch (boost::bad_lexical_cast e)
+                {
+                    magicString += "t";
+
+                    if ((stringMapIt = stringMap.find(*eventDataListIt)) == stringMap.end())
+                    {
+                        stringIndexList.push_back(stringIndex);
+                        stringMap[stringIndex++] = *eventDataListIt;
+                    }
+                    else
+                    {
+                        stringIndexList.push_back(stringMapIt->first);
+                    }
+                }
+
+                switch (numericData)
+                {
+                    case 0:
+                        magicString += "0";
+                        break;
+
+                    case 1:
+                        magicString += "1";
+                        break;
+
+                    case 2:
+                        magicString += "!";
+                        break;
+
+                    case 4:
+                        magicString += "@";
+                        break;
+
+                    case 8:
+                        magicString += "#";
+                        break;
+
+                    case 16:
+                        magicString += "$";
+                        break;
+
+                    case 32:
+                        magicString += "%";
+                        break;
+
+                    case 64:
+                        magicString += "^";
+                        break;
+
+                    default:
+                        if (numericData <= 255)
+                        {
+                            byteList.push_back((uint8_t) numericData);
+                        }
+                        else if (numericData <= 65535)
+                        {
+                            shortList.push_back((uint16_t) numericData);
+                        }
+                        else
+                        {
+                            intList.push_back(numericData);
+                        }
+                        break;
                 }
             }
 
-            if (i == 0)
-            {
-                formattedLog->add(formattedFragment.size());
-            }
-            formattedLog->add(formattedFragment);
-        }
-    }
+            magicStringList.push_back(magicString);
 
+            if ((eventTypeMapIt = eventTypeMapg.find(eventIt->getType())) == eventTypeMap.end())
+            {
+                eventTypeIndexList.push_back(eventTypeIndex);
+                eventTypeMap[eventTypeIndex++] = eventIt->getType();
+            }
+            else
+            {
+                eventTypeIndexList.push_back(eventTypeMapIt->first);
+            }
+        }
+
+        // 32bit int -> Number of u8 following
+        formattedLog->add((uint32_t) byteList.size());
+        formattedLog->add(byteList);
+
+        // 32bit int -> Number of u16 following
+        formattedLog->add((uint32_t) shortList.size());
+        formattedLog->add(shortList);
+
+        // 32bit int -> Number of u32 following
+        formattedLog->add((uint32_t) shortList.size());
+        formattedLog->add(intList);
+
+        // 32but int -> Number of string indices (u16) following
+        formattedLog->add((uint32_t) stringIndexList.size());
+        formattedLog->add(stringIndexList);
+
+        // 32bit int -> Length of strings section (Done via fragment)
+        formattedFragment.clear();
+        for (stringMapIt = stringMap.begin();
+             stringMapIt != stringMap.end();
+             ++stringMapIt)
+        {
+            formattedFragment.add((uint16_t) stringMapIt->second->length());
+            formattedFragment.add(stringMapIt->second);
+        }
+
+        formattedLog->add((uint32_t) formattedFragment.size());
+        formattedLog->add(formattedFragment);
+
+        // 32bit int -> Number of type indices (u16) following
+        formattedLog->add((uint32_t) eventCount);
+        for (uint16_t i = 0; i < eventCount; ++i)
+        {
+            formattedLog.add(i);
+        }
+
+        // 32bit int -> Length of Type Section // 32bit int -> Length of
+        // Type section (done via fragment)
+        formattedFragment.clear();
+        for (magicStringListIt = magicStringList.begin();
+             magicStringListIt != magicStringList.end();
+             ++magicStringListIt)
+        {
+            formattedFragment.add((uint16_t) magicStringListIt->length());
+            formattedFragment.add(*magicStringListIt);
+        }
+
+        formattedLog->add((uint32_t) formattedFragment.size());
+        formattedLog->add(formattedFragment);
+
+        // 32bit int -> Number of event type indices (u8) following
+        formattedLog.add((uint32_t) eventTypeIndexList.size());
+        formattedLog.add(eventTypeIndexList);
+
+        // 32bit int -> Length of event type string section (done via
+        // fragment)
+        formattedFragment.clear();
+        for (eventTypeMapIt = eventTypeMap.begin();
+             eventTypeMapIt != eventTypeMap.end();
+             ++eventTypeMapIt)
+        {
+            formattedFragment.add((uint16_t) eventTypeMapIt->second->length());
+            formattedFragment.add(eventTypeMapIt->second);
+        }
+
+        formattedLog->add((uint32_t) formattedFragment.size());
+        formattedLog->add(formattedFragment);
+    }
 }

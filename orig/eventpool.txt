@@ -1,0 +1,61 @@
+/* Event Pool */
+aeae aeae aeae aeae // Magic number
+
+0000 0000           // 32bit int -> start index
+0000 0000           // 32bit int -> Number of u8 following
+
+0000 0003           // 32bit int -> Number of u16 following
+    0a8f
+    0a8f
+    0b4e
+
+0000 0003           // 32bit int -> Number of u32 following
+    0001 2eb1
+    0001 8fd3
+    0001 cb9f
+
+0000 0004           // 32but int -> Number of string indices (u16) following
+    0000
+    0001
+    0002
+    0002
+
+0000 0037           // 32bit int -> Length of strings section
+    0000 0003           // 32bit int -> Number of strings contained within
+        000d                // 16bit int -> Length of following string
+            4563 686f 206f 6620 4c69 6768 74 // "Echo of Light"
+        000c                // 16bit int -> Length of following string
+            4661 6572 6965 2053 7761 726d   // "Faerie Swarm"
+        0014                // 16bit int -> Length of following string
+            4669 7265 2045 6c65 6d65 6e74 616c 2054 6f74 656d   // "Fire Elemental Totem"
+
+0000 0004           // 32bit int -> Number of type indices (u16) following
+    0000
+    0001
+    0002
+    0003
+
+0000 001c           // 32bit int -> Length of Type Section
+    0000 0004           // 32bit int -> Number of types contained within
+        0007                // Length of following type
+            6974 2168 6830 6e   // "it!h0n"
+        0003                // Length of following type
+            6974 23             // "it#"
+        0003                // Length of following type
+            6974 40             // "it@"
+        0003                // Length of following type
+            6874 40             // "it@"
+0000 0004           // 32bit int -> Number of event type indices (u8) following
+    00
+    01
+    02
+    01
+
+0000 003b           // 32bit int -> Length of event type string section
+    0000 0003           // 32bit int -> Number of event type strings contained within
+        0013                // Length of the following event string
+            5350 454c 4c5f 5045 5249 4f44 4943 5f48 4541 4c
+        0012                // Length of the following event string
+            5350 454c 4c5f 4341 5354 5f53 5543 4345 5353 
+        000c                // Length of the following event string
+            5350 454c 4c5f 5355 4d4d 4f4e

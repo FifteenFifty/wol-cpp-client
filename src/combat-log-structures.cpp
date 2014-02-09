@@ -141,6 +141,21 @@ namespace WoL
         return eventList;
     }
 
+    uint32_t Event::getId()
+    {
+        return id;
+    }
+
+    std::string Event::getType()
+    {
+        return type;
+    }
+
+    std::list<std::string> Event::getData()
+    {
+        return dataList;
+    }
+
     Event::Event()
     :
     id(),
