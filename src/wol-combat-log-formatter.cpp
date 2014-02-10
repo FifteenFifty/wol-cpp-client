@@ -155,18 +155,20 @@ namespace WoL
         std::list<uint16_t>                       shortList;
         std::list<uint32_t>                       intList;
         uint16_t                                  stringIndex = 0;
-        std::map<uint16_t, std::string>           stringMap;
-        std::map<uint16_t, std::string>::iterator stringMapIt;
-        std::list<uint16_t>                       stringIndexList;
+        std::map<std::string, uint16_t>           stringMap;
+        std::map<std::string, uint16_t>::iterator stringMapIt;
+        std::list<std::string*>                   stringPtrList;
         uint8_t                                   eventTypeIndex = 0;
-        std::map<uint8_t, std::string>            eventTypeMap;
-        std::map<uint8_t, std::string>::iterator  eventTypeMapIt;
-        std::list<uint8_t>                        eventTypeIndexList;
+        std::map<std::string, uint8_t>            eventTypeMap;
+        std::map<std::string, uint8_t>::iterator  eventTypeMapIt;
+        std::list<std::string*>                   eventTypePtrList;
+        std::list<std::string*>::iterator         stringPtrListIt;
 
         /* The magic string seems to notify WoL of the data that is contained
          * within an element */
-        std::list<std::string>                   magicStringList;
-        std::string                              magicString;
+        std::list<std::string> magicStringList;
+        std::string            magicString;
+        std::string            toAdd;
 
         formattedLog->add(0xaeaeaeaeaeaeaeae);
 
@@ -201,12 +203,12 @@ namespace WoL
 
                     if ((stringMapIt = stringMap.find(*eventDataListIt)) == stringMap.end())
                     {
-                        stringIndexList.push_back(stringIndex);
-                        stringMap[stringIndex++] = *eventDataListIt;
+                        stringMap[*eventDataListIt] = stringIndex++;
+                        stringIndexList.push_back(//TODO);
                     }
                     else
                     {
-                        stringIndexList.push_back(stringMapIt->first);
+                        stringIndexList.push_back(&stringMapIt->first);
                     }
                 }
 
@@ -263,14 +265,14 @@ namespace WoL
 
             magicStringList.push_back(magicString);
 
-            if ((eventTypeMapIt = eventTypeMapg.find(eventIt->getType())) == eventTypeMap.end())
+            if ((eventTypeMapIt = eventTypeMap.find((*eventIt)->getType())) == eventTypeMap.end())
             {
                 eventTypeIndexList.push_back(eventTypeIndex);
-                eventTypeMap[eventTypeIndex++] = eventIt->getType();
+                eventTypeMap[(*eventIt)->getType()] = eventTypeIndex++;
             }
             else
             {
-                eventTypeIndexList.push_back(eventTypeMapIt->first);
+                eventTypeIndexList.push_back(eventTypeMapIt->second);
             }
         }
 
@@ -292,12 +294,14 @@ namespace WoL
 
         // 32bit int -> Length of strings section (Done via fragment)
         formattedFragment.clear();
-        for (stringMapIt = stringMap.begin();
-             stringMapIt != stringMap.end();
-             ++stringMapIt)
+        for (stringIndexListIt = stringIndexList.begin();
+             stringIndexListIt != stringIndexList.end();
+             ++stringIndexListIt)
         {
-            formattedFragment.add((uint16_t) stringMapIt->second->length());
-            formattedFragment.add(stringMapIt->second);
+            toAdd = stringMap[*stringIndexListIt];
+
+            formattedFragment.add((uint16_t) toAdd.length());
+            formattedFragment.add(toAdd);
         }
 
         formattedLog->add((uint32_t) formattedFragment.size());
@@ -307,7 +311,7 @@ namespace WoL
         formattedLog->add((uint32_t) eventCount);
         for (uint16_t i = 0; i < eventCount; ++i)
         {
-            formattedLog.add(i);
+            formattedLog->add(i);
         }
 
         // 32bit int -> Length of Type Section // 32bit int -> Length of

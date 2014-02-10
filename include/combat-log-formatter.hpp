@@ -44,6 +44,29 @@ namespace WoL
         void add(T toAdd);
 
         /**
+         * This method inserts an ordered list of elements into the formatted
+         * combat log. This method is implemented in this header in order to
+         * make use of implicit instantiation.
+         *
+         * @param  toAdd A list of item that are to be added to the formatted
+         *               combat log.
+         * @tparam T     The type of the items within the list that are being
+         *               added to the formatted combat log.
+         */
+        template <typename T>
+        void add(std::list<T> toAdd)
+        {
+            typename std::list<T>::iterator listIt;
+
+            for (listIt = toAdd.begin();
+                 listIt != toAdd.end();
+                 ++listIt)
+            {
+                add(*listIt);
+            }
+        }
+
+        /**
          * This method empties the formatted combat log, removing all of its
          * stored data.
          */
