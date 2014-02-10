@@ -204,6 +204,7 @@ namespace WoL
                     if ((stringMapIt = stringMap.find(*eventDataListIt)) == stringMap.end())
                     {
                         stringMap[*eventDataListIt] = stringIndex++;
+                        // Store pointers to map keys in the list
                         stringIndexList.push_back(//TODO);
                     }
                     else
