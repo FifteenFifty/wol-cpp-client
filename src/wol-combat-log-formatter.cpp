@@ -205,11 +205,11 @@ namespace WoL
                     {
                         stringMap[*eventDataListIt] = stringIndex++;
                         // Store pointers to map keys in the list
-                        stringIndexList.push_back(//TODO);
+                        stringPtrList.push_back((std::string*) &(stringMap.find(*eventDataListIt)->first));
                     }
                     else
                     {
-                        stringIndexList.push_back(&stringMapIt->first);
+                        stringPtrList.push_back((std::string*) &stringMapIt->first);
                     }
                 }
 
@@ -268,12 +268,12 @@ namespace WoL
 
             if ((eventTypeMapIt = eventTypeMap.find((*eventIt)->getType())) == eventTypeMap.end())
             {
-                eventTypeIndexList.push_back(eventTypeIndex);
                 eventTypeMap[(*eventIt)->getType()] = eventTypeIndex++;
+                eventTypePtrList.push_back((std::string*) &eventTypeMap.find((*eventIt)->getType())->first);
             }
             else
             {
-                eventTypeIndexList.push_back(eventTypeMapIt->second);
+                eventTypePtrList.push_back((std::string*) &eventTypeMapIt->second);
             }
         }
 
