@@ -9,6 +9,7 @@
 
 #include <wol-combat-log-formatter.hpp>
 #include <iostream>
+#include <boost/bimap.hpp>
 
 namespace WoL
 {
@@ -151,24 +152,25 @@ namespace WoL
 
         uint32_t numericData;
 
-        std::list<uint8_t>                        byteList;
-        std::list<uint16_t>                       shortList;
-        std::list<uint32_t>                       intList;
-        uint16_t                                  stringIndex = 0;
-        std::map<std::string, uint16_t>           stringMap;
-        std::map<std::string, uint16_t>::iterator stringMapIt;
-        std::list<std::string*>                   stringPtrList;
-        uint8_t                                   eventTypeIndex = 0;
-        std::map<std::string, uint8_t>            eventTypeMap;
-        std::map<std::string, uint8_t>::iterator  eventTypeMapIt;
-        std::list<std::string*>                   eventTypePtrList;
-        std::list<std::string*>::iterator         stringPtrListIt;
+        std::list<uint8_t>                                       byteList;
+        std::list<uint16_t>                                      shortList;
+        std::list<uint32_t>                                      intList;
+        uint16_t                                                 stringIndex = 0;
+        boost::bimap<uint16_t, std::string>                      stringMap;
+        boost::bimap<uint16_t, std::string>::right_map::iterator stringMapRightIt;
+        boost::bimap<uint16_t, std::string>::left_map::iterator  stringMapLeftIt;
+        std::list<uint16_t>                                      stringIndexList;
+        uint8_t                                                  eventTypeIndex = 0;
+        boost::bimap<uint8_t, std::string>                       eventTypeMap;
+        boost::bimap<uint8_t, std::string>::right_map::iterator  eventTypeRightMapIt;
+        boost::bimap<uint8_t, std::string>::left_map::iterator   eventTypeLeftMapIt;
+        std::list<uint8_t>                                       eventTypeIndexList;
 
         /* The magic string seems to notify WoL of the data that is contained
          * within an element */
-        std::list<std::string> magicStringList;
-        std::string            magicString;
-        std::string            toAdd;
+        std::list<std::string>           magicStringList;
+        std::list<std::string>::iterator magicStringListIt;
+        std::string                      magicString;
 
         formattedLog->add(0xaeaeaeaeaeaeaeae);
 
@@ -201,15 +203,16 @@ namespace WoL
                 {
                     magicString += "t";
 
-                    if ((stringMapIt = stringMap.find(*eventDataListIt)) == stringMap.end())
+                    if ((stringMapRightIt = stringMap.right.find(*eventDataListIt)) == stringMap.right.end())
                     {
-                        stringMap[*eventDataListIt] = stringIndex++;
-                        // Store pointers to map keys in the list
-                        stringPtrList.push_back((std::string*) &(stringMap.find(*eventDataListIt)->first));
+                        stringIndexList.push_back(stringIndex);
+                        stringMap.insert(boost::bimap<uint16_t,
+                                                      std::string>::value_type( stringIndex++,
+                                                                               *eventDataListIt));
                     }
                     else
                     {
-                        stringPtrList.push_back((std::string*) &stringMapIt->first);
+                        stringIndexList.push_back(stringMapRightIt->second);
                     }
                 }
 
@@ -266,14 +269,16 @@ namespace WoL
 
             magicStringList.push_back(magicString);
 
-            if ((eventTypeMapIt = eventTypeMap.find((*eventIt)->getType())) == eventTypeMap.end())
+            if ((eventTypeRightMapIt = eventTypeMap.right.find((*eventIt)->getType())) == eventTypeMap.right.end())
             {
-                eventTypeMap[(*eventIt)->getType()] = eventTypeIndex++;
-                eventTypePtrList.push_back((std::string*) &eventTypeMap.find((*eventIt)->getType())->first);
+                eventTypeIndexList.push_back(eventTypeIndex);
+                eventTypeMap.insert(boost::bimap<uint8_t,
+                                                 std::string>::value_type( eventTypeIndex++,
+                                                                          (*eventIt)->getType()));
             }
             else
             {
-                eventTypePtrList.push_back((std::string*) &eventTypeMapIt->second);
+                eventTypeIndexList.push_back(eventTypeRightMapIt->second);
             }
         }
 
@@ -295,14 +300,12 @@ namespace WoL
 
         // 32bit int -> Length of strings section (Done via fragment)
         formattedFragment.clear();
-        for (stringIndexListIt = stringIndexList.begin();
-             stringIndexListIt != stringIndexList.end();
-             ++stringIndexListIt)
+        for (stringMapLeftIt = stringMap.left.begin();
+             stringMapLeftIt != stringMap.left.end();
+             ++stringMapLeftIt)
         {
-            toAdd = stringMap[*stringIndexListIt];
-
-            formattedFragment.add((uint16_t) toAdd.length());
-            formattedFragment.add(toAdd);
+            formattedFragment.add((uint16_t) stringMapLeftIt->second.length());
+            formattedFragment.add(stringMapLeftIt->second);
         }
 
         formattedLog->add((uint32_t) formattedFragment.size());
@@ -330,18 +333,18 @@ namespace WoL
         formattedLog->add(formattedFragment);
 
         // 32bit int -> Number of event type indices (u8) following
-        formattedLog.add((uint32_t) eventTypeIndexList.size());
-        formattedLog.add(eventTypeIndexList);
+        formattedLog->add((uint32_t) eventTypeIndexList.size());
+        formattedLog->add(eventTypeIndexList);
 
         // 32bit int -> Length of event type string section (done via
         // fragment)
         formattedFragment.clear();
-        for (eventTypeMapIt = eventTypeMap.begin();
-             eventTypeMapIt != eventTypeMap.end();
-             ++eventTypeMapIt)
+        for (eventTypeLeftMapIt = eventTypeMap.left.begin();
+             eventTypeLeftMapIt != eventTypeMap.left.end();
+             ++eventTypeLeftMapIt)
         {
-            formattedFragment.add((uint16_t) eventTypeMapIt->second->length());
-            formattedFragment.add(eventTypeMapIt->second);
+            formattedFragment.add((uint16_t) eventTypeLeftMapIt->second.length());
+            formattedFragment.add(eventTypeLeftMapIt->second);
         }
 
         formattedLog->add((uint32_t) formattedFragment.size());
