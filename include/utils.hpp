@@ -104,7 +104,7 @@ namespace WoL
         public:
             /**
              * This method performs a lexical cast, making use of a
-             * stringstream to perform the cast.
+             * boost::lexical_cast to perform the cast.
              *
              * @param  toCast The value, of type S, being lexical cast.
              * @tparam S      The source type.
@@ -119,6 +119,8 @@ namespace WoL
             template <typename S, typename D>
             static D lexicalCast(S toCast)
             {
+                std::cout<<1<<std::endl;
+                std::cout<<toCast << std::endl;
                 return boost::lexical_cast<D, S>(toCast);
             }
         };

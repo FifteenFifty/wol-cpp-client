@@ -193,6 +193,7 @@ namespace WoL
                     continue;
                 }
 
+                std::cout<<"Hai"<<std::endl;
                 try
                 {
                     numericData = Utils::Conversion::lexicalCast<std::string,
