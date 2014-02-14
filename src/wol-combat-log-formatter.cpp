@@ -193,7 +193,6 @@ namespace WoL
                     continue;
                 }
 
-                std::cout<<"Hai"<<std::endl;
                 try
                 {
                     numericData = Utils::Conversion::lexicalCast<std::string,
@@ -215,6 +214,8 @@ namespace WoL
                     {
                         stringIndexList.push_back(stringMapRightIt->second);
                     }
+
+                    continue;
                 }
 
                 switch (numericData)

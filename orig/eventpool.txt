@@ -14,7 +14,7 @@ aeae aeae aeae aeae // Magic number
     0001 8fd3
     0001 cb9f
 
-0000 0004           // 32but int -> Number of string indices (u16) following
+0000 0004           // 32bit int -> Number of string indices (u16) following
     0000
     0001
     0002
@@ -56,6 +56,6 @@ aeae aeae aeae aeae // Magic number
         0013                // Length of the following event string
             5350 454c 4c5f 5045 5249 4f44 4943 5f48 4541 4c
         0012                // Length of the following event string
-            5350 454c 4c5f 4341 5354 5f53 5543 4345 5353 
+            5350 454c 4c5f 4341 5354 5f53 5543 4345 5353
         000c                // Length of the following event string
             5350 454c 4c5f 5355 4d4d 4f4e

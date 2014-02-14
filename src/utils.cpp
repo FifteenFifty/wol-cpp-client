@@ -133,18 +133,12 @@ namespace WoL
         template<>
         uint32_t Conversion::lexicalCast(std::string toCast)
         {
-            std::cout<<"a"<<std::endl;
-                            std::cout<<toCast << std::endl;
-
             return StringUtils::parseHex<uint32_t>(toCast);
         }
 
         template<>
         uint64_t Conversion::lexicalCast(std::string toCast)
         {
-            std::cout<<"b"<<std::endl;
-                            std::cout<<toCast << std::endl;
-
             return StringUtils::parseHex<uint64_t>(toCast);
         }
     }

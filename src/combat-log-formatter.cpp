@@ -69,7 +69,6 @@ namespace WoL
     template <>
     void FormattedCombatLog::add(std::string toAdd)
     {
-        std::cout<<"Adding: " << toAdd << std::endl;
         byteBuffer.insert(byteBuffer.end(), toAdd.begin(), toAdd.end());
     }
 

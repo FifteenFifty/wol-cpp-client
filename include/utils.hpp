@@ -119,8 +119,6 @@ namespace WoL
             template <typename S, typename D>
             static D lexicalCast(S toCast)
             {
-                std::cout<<1<<std::endl;
-                std::cout<<toCast << std::endl;
                 return boost::lexical_cast<D, S>(toCast);
             }
         };

@@ -66,6 +66,8 @@ namespace WoL
         this->name      = ass.name;
         this->flags     = ass.flags;
         this->raidFlags = ass.raidFlags;
+
+        return *this;
     }
 
     std::list<Actor*> Actor::getActors()
@@ -115,22 +117,19 @@ namespace WoL
     Event * Event::factory(std::string            type,
                            std::list<std::string> data)
     {
-        std::list<std::string>::iterator        dataIt;
-        std::map<std::string, Event>::iterator  eventMapIt;
-        Event                                  *toReturn  = NULL;
-        std::string                             keyString = type;
-
-        std::cout<<"Type: " << type << std::endl;
+        std::list<std::string>::iterator       dataIt;
+        std::map<std::string, Event>::iterator eventMapIt;
+        std::string                            keyString = type;
 
         for (dataIt = data.begin(); dataIt != data.end(); ++dataIt)
         {
-        std::cout<<"    Element: " << *dataIt << std::endl;
             keyString += *dataIt;
         }
 
         if ((eventMapIt = eventMap.find(keyString)) == eventMap.end())
         {
             eventMap[keyString] = Event(currentId++, type, data);
+            eventList.push_back(&eventMap[keyString]);
         }
 
         return &eventMap[keyString];
@@ -283,14 +282,23 @@ namespace WoL
                     return NULL;
                 }
 
-                info = SubjectInfo::factory(*(infoListIt++),
-                                            *(infoListIt++),
-                                            *(infoListIt++),
-                                            *(infoListIt++),
-                                            *(infoListIt++),
-                                            *(infoListIt++),
-                                            *(infoListIt++),
-                                            *(infoListIt));
+                std::string guid(*(infoListIt++));
+                std::string health(*(infoListIt++));
+                std::string attackPower(*(infoListIt++));
+                std::string spellPower(*(infoListIt++));
+                std::string resourceType(*(infoListIt++));
+                std::string resourceAmount(*(infoListIt++));
+                std::string posX(*(infoListIt++));
+                std::string posY(*(infoListIt++));
+
+                info = SubjectInfo::factory(guid,
+                                            health,
+                                            attackPower,
+                                            spellPower,
+                                            resourceType,
+                                            resourceAmount,
+                                            posX,
+                                            posY);
 
                 /* Remove the subjectInfo. */
                 boost::regex remove54Regex("(?<=,)0x[0-9A-Fa-f]{16}(?:,-?\\d+){5}(?:,-?\\d*\\.\\d+){2},?");
@@ -345,17 +353,12 @@ namespace WoL
             std::string flags     = *(dataIt++);
             std::string raidFlags = *(dataIt++);
 
-            std::cout<<"guid: " << guid << std::endl;
-            std::cout<<"Name:" << name << std::endl;
-
             source = Actor::factory(guid, name, flags, raidFlags);
 
             guid      = *(dataIt++);
             name      = *(dataIt++);
             flags     = *(dataIt++);
             raidFlags = *(dataIt++);
-            std::cout<<"guid: " << guid << std::endl;
-            std::cout<<"Name:" << name << std::endl;
 
             destination = Actor::factory(guid, name, flags, raidFlags);
             consumable -= 8;
