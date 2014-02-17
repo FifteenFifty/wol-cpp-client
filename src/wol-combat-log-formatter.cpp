@@ -33,8 +33,8 @@ namespace WoL
 
         FormattedCombatLog *log = new FormattedCombatLog();
 
-        addMagicNumber(log);
-        addActorInfo(combatLog, log);
+//        addMagicNumber(log);
+//        addActorInfo(combatLog, log);
         addEventInfo(combatLog, log);
 
         return log;
@@ -149,6 +149,7 @@ namespace WoL
         FormattedCombatLog               formattedFragment;
         std::list<std::string>           eventDataList;
         std::list<std::string>::iterator eventDataListIt;
+        std::string                      eventString;
 
         uint32_t numericData;
 
@@ -195,20 +196,21 @@ namespace WoL
 
                 try
                 {
-                    numericData = Utils::Conversion::lexicalCast<std::string,
-                                                                 uint32_t>(
+                    numericData = Utils::Conversion::lexicalCast<uint32_t>(
                                                         *eventDataListIt);
                 }
                 catch (boost::bad_lexical_cast e)
                 {
+                    eventString = Utils::StringUtils::parseString(*eventDataListIt);
+
                     magicString += "t";
 
-                    if ((stringMapRightIt = stringMap.right.find(*eventDataListIt)) == stringMap.right.end())
+                    if ((stringMapRightIt = stringMap.right.find(eventString)) == stringMap.right.end())
                     {
                         stringIndexList.push_back(stringIndex);
                         stringMap.insert(boost::bimap<uint16_t,
-                                                      std::string>::value_type( stringIndex++,
-                                                                               *eventDataListIt));
+                                                      std::string>::value_type(stringIndex++,
+                                                                               eventString));
                     }
                     else
                     {
@@ -296,12 +298,13 @@ namespace WoL
         formattedLog->add((uint32_t) shortList.size());
         formattedLog->add(intList);
 
-        // 32but int -> Number of string indices (u16) following
+        // 32bit int -> Number of string indices (u16) following
         formattedLog->add((uint32_t) stringIndexList.size());
         formattedLog->add(stringIndexList);
 
         // 32bit int -> Length of strings section (Done via fragment)
         formattedFragment.clear();
+        formattedFragment.add((uint32_t) stringMap.size());
         for (stringMapLeftIt = stringMap.left.begin();
              stringMapLeftIt != stringMap.left.end();
              ++stringMapLeftIt)

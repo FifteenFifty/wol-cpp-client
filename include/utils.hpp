@@ -111,7 +111,7 @@ namespace WoL
              * @tparam D      The destination type.
              *
              * @return        The value, of type D, resulting from performing
-             *                a lexical cast on _value.
+             *                a lexical cast on _value_.
              *
              * @throws TODO
              * @throws Currently throws a boost::bad_lexical_cast on error.
@@ -121,6 +121,22 @@ namespace WoL
             {
                 return boost::lexical_cast<D, S>(toCast);
             }
+
+            /**
+             * This method performs a lexical cast from a string to a desired
+             * type, making use of a boost::lexical_cast to perform the cast.
+             *
+             * @param  toCast The value string being lexical cast.
+             * @tparam D      The destination type.
+             *
+             * @return        The value, of type D, resulting from performing
+             *                a lexical cast on _value_.
+             *
+             * @throws TODO
+             * @throws Currently throws a boost::bad_lexical_cast on error.
+             */
+            template <typename D>
+            static D lexicalCast(std::string toCast);
         };
     }
 }

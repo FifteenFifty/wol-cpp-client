@@ -301,7 +301,7 @@ namespace WoL
                                             posY);
 
                 /* Remove the subjectInfo. */
-                boost::regex remove54Regex("(?<=,)0x[0-9A-Fa-f]{16}(?:,-?\\d+){5}(?:,-?\\d*\\.\\d+){2},?");
+                boost::regex remove54Regex(",?0x[0-9A-Fa-f]{16}(?:,-?\\d+){5}(?:,-?\\d*\\.\\d+){2}");
                 line = boost::regex_replace(line, remove54Regex, "");
             }
         }
