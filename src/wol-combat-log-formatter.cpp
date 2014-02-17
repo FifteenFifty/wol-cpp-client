@@ -326,6 +326,7 @@ namespace WoL
         // 32bit int -> Length of Type Section // 32bit int -> Length of
         // Type section (done via fragment)
         formattedFragment.clear();
+        formattedFragment.add((uint32_t) magicStringList.size());
         for (magicStringListIt = magicStringList.begin();
              magicStringListIt != magicStringList.end();
              ++magicStringListIt)
@@ -344,6 +345,7 @@ namespace WoL
         // 32bit int -> Length of event type string section (done via
         // fragment)
         formattedFragment.clear();
+        formattedFragment.add((uint32_t) eventTypeMap.size());
         for (eventTypeLeftMapIt = eventTypeMap.left.begin();
              eventTypeLeftMapIt != eventTypeMap.left.end();
              ++eventTypeLeftMapIt)
