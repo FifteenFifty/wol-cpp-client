@@ -83,6 +83,30 @@ namespace WoL
          */
         void addEventInfo(CombatLog          &combatLog,
                           FormattedCombatLog *formattedLog);
+
+        /**
+         * This method adds entry list information to the FormattedCombatLog.
+         *
+         * @param combatLog    A reference to a CombatLog whose EntryList
+         *                     information shall be formatted into the
+         *                     FormattedCombatLog.
+         * @param formattedLog A pointer to the FormattedCombatLog to which
+         *                     data is to be added.
+         */
+        void addEntryList(CombatLog          &combatLog,
+                          FormattedCombatLog *formattedLog);
+
+        /**
+         * This method adds state list information to the FormattedCombatLog.
+         *
+         * @param combatLog    A reference to a CombatLog whose StateList
+         *                     information shall be formatted into the
+         *                     FormattedCombatLog.
+         * @param formattedLog A pointer to the FormattedCombatLog to which
+         *                     data is to be added.
+         */
+        void addStateList(CombatLog          &combatLog,
+                          FormattedCombatLog *formattedLog);
     };
 }
 #endif

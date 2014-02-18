@@ -417,6 +417,15 @@ namespace WoL
          */
         std::list<Event*> getEvents();
 
+        /**
+         * This method returns an ordered list of pointers CombatLogLine%s,
+         * representing the combat log.
+         *
+         * @return An ordered list of CombatLogLine%s, representing the
+         *         combat log.
+         */
+        std::list<CombatLogLine*> getLines();
+
     private:
         std::list<CombatLogLine*> lines; /**< An ordered list of
                                           *   CombatLogLine%s, representing

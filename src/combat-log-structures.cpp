@@ -168,7 +168,7 @@ namespace WoL
                  std::list<std::string> data)
     :
     id(id),
-    type(),
+    type(type),
     dataList(data)
     {
         //TODO - Add the typeString to a set of unique strings (unique data

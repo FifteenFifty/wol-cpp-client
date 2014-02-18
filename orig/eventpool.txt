@@ -45,6 +45,7 @@ aeae aeae aeae aeae // Magic number
             6974 40             // "it@"
         0003                // Length of following type
             6874 40             // "it@"
+
 0000 0004           // 32bit int -> Number of event type indices (u8) following
     00
     01

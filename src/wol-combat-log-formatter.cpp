@@ -33,9 +33,12 @@ namespace WoL
 
         FormattedCombatLog *log = new FormattedCombatLog();
 
-//        addMagicNumber(log);
-//        addActorInfo(combatLog, log);
+        addMagicNumber(log);
+        addPropertyInfo(log);
+        addActorInfo(combatLog, log);
         addEventInfo(combatLog, log);
+        addEntryInfo(combatLog, log);
+//        addStateList(combatLog, log);
 
         return log;
     }
@@ -257,14 +260,17 @@ namespace WoL
                     default:
                         if (numericData <= 255)
                         {
+                            magicString += "b";
                             byteList.push_back((uint8_t) numericData);
                         }
                         else if (numericData <= 65535)
                         {
+                            magicString += "h";
                             shortList.push_back((uint16_t) numericData);
                         }
                         else
                         {
+                            magicString += "i";
                             intList.push_back(numericData);
                         }
                         break;
@@ -356,5 +362,14 @@ namespace WoL
 
         formattedLog->add((uint32_t) formattedFragment.size());
         formattedLog->add(formattedFragment);
+    }
+
+    void WolCombatLogFormatter::addStateInfo(CombatLog          &combatLog,
+                                             FormattedCombatLog *formattedLog)
+    {
+        // The start index. It is currently zero
+        formattedLog->add((uint32_t) 0);
+
+        std::list<
     }
 }
