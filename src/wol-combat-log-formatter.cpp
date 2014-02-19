@@ -364,12 +364,21 @@ namespace WoL
         formattedLog->add(formattedFragment);
     }
 
-    void WolCombatLogFormatter::addStateInfo(CombatLog          &combatLog,
+    void WolCombatLogFormatter::addEntryInfo(CombatLog          &combatLog,
                                              FormattedCombatLog *formattedLog)
     {
         // The start index. It is currently zero
         formattedLog->add((uint32_t) 0);
 
-        std::list<
+        std::map<Actor*, uint64_t>          actorHotness;
+        std::list<CombatLogLine*>           lines = combatLog.getLines();
+        std::list<CombatLogLine*>::iterator lineIt;
+
+        for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
+        {
+            actorHotness[(*lineIt)->getSourceActor()]++;
+            actorHotness[(*lineIt)->getDestinationActor()]++;
+        }
+
     }
 }

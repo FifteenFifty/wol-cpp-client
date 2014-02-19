@@ -93,7 +93,7 @@ namespace WoL
          * @param formattedLog A pointer to the FormattedCombatLog to which
          *                     data is to be added.
          */
-        void addEntryList(CombatLog          &combatLog,
+        void addEntryInfo(CombatLog          &combatLog,
                           FormattedCombatLog *formattedLog);
 
         /**

@@ -380,6 +380,16 @@ namespace WoL
                                  info);
     }
 
+    Actor * CombatLogLine::getSourceActor()
+    {
+        return source;
+    }
+
+    Actor * CombatLogLine::getDestinationActor()
+    {
+        return destination;
+    }
+
     CombatLogLine::CombatLogLine(std::string  timestamp,
                                  Actor       *source,
                                  Actor       *destination,
@@ -441,5 +451,10 @@ namespace WoL
     std::list<Event*> CombatLog::getEvents()
     {
         return Event::getEvents();
+    }
+
+    std::list<CombatLogLine*> CombatLog::getLines()
+    {
+        return lines;
     }
 }

@@ -337,6 +337,20 @@ namespace WoL
          */
         static CombatLogLine * factory(std::string line);
 
+        /**
+         * This method returns a pointer to this line's Source actor.
+         *
+         * @return A pointer to this line's Source actor.
+         */
+        Actor * getSourceActor();
+
+        /**
+         * This method returns a pointer to this line's Destination actor.
+         *
+         * @return A pointer to this line's Destination actor.
+         */
+        Actor * getDestinationActor();
+
     protected:
         /**
          * A basic constructor.
