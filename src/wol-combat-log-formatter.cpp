@@ -370,9 +370,12 @@ namespace WoL
         // The start index. It is currently zero
         formattedLog->add((uint32_t) 0);
 
-        std::map<Actor*, uint64_t>          actorHotness;
-        std::list<CombatLogLine*>           lines = combatLog.getLines();
-        std::list<CombatLogLine*>::iterator lineIt;
+        std::map<Actor*, uint64_t>           actorHotness;
+        std::map<Actor*, uint64_t>::iterator hotnessIt;
+        std::list<CombatLogLine*>            lines = combatLog.getLines();
+        std::list<CombatLogLine*>::iterator  lineIt;
+        std::list<Actor*>                    orderedActors;
+        std::list<Actor*>::iterator          orderedActorIt
 
         for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
         {
@@ -380,5 +383,26 @@ namespace WoL
             actorHotness[(*lineIt)->getDestinationActor()]++;
         }
 
+        for (hotnessIt = actorHotness.begin();
+             hotnessIt != actorHotness.end();
+             ++hotnessIt)
+        {
+            if (orderedActors.empty())
+            {
+                orderedActors.push_back(hotnessIt->first);
+                continue;
+            }
+
+            for (orderedActorIt = orderedActors.begin();
+                 orderedActorIt != orderedActors.end();
+                 ++orderedActorIt)
+            {
+                if (actorHotness[*orderedActorIt] > hotnessIt->second)
+                {
+
+                }
+            }
+
+        }
     }
 }
