@@ -21,8 +21,8 @@ wol_client_SOURCES  = include/argument-parser.hpp\
                       src/wol-combat-log-formatter.cpp
 wol_client_CXXFLAGS = $(CURL_CXXFLAGS)\
                       $(BOOST_REGEX_CXXFLAGS)\
-                      $(BOOST_DATETIME_CXXFLAGS)\
+                      $(BOOST_DATE_TIME_CXXFLAGS)\
                       '-Iinclude'
 wol_client_LDADD    = $(CURL_LIBS)\
                       $(BOOST_REGEX_LIBS)\
-                      $(BOOST_DATETIME_LIBS)
+                      $(BOOST_DATE_TIME_LIBS)

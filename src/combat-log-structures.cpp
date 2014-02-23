@@ -306,8 +306,22 @@ namespace WoL
             }
         }
 
+        std::cout<<1<<std::endl;
+        boost::posix_time::time_input_facet *tif =
+                    new boost::posix_time::time_input_facet("%m/%d %H:%M:%S.%f");
+
+        std::stringstream timeConverter;
+
+        timeConverter.imbue(std::locale(timeConverter.getloc(), tif));
+
+        timeConverter << line.substr(0, dateLength);
+        timeConverter >> timestamp;
+
+        std::cout<<"Creating ptime from: " << line.substr(0, dateLength) << std::endl;
         timestamp = boost::posix_time::time_from_string(line.substr(0,
                                                                     dateLength));
+        std::cout<<2<<std::endl;
+        std::cout<<"Timestamp: " << timestamp << std::endl;
         line      = line.substr(dateLength + 2, line.length());
 
         std::list<std::string>           data   = Utils::StringUtils::parseCsv(line);

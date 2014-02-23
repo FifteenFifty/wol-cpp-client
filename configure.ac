@@ -36,7 +36,7 @@ AC_PROG_LIBTOOL
 # Locate required boost libraries
 BOOST_REQUIRE([1.51])
 BOOST_REGEX
-BOOST_DATETIME
+BOOST_DATE_TIME
 
 # Use PKGconfig to locate libcurl
 PKG_CHECK_MODULES([CURL], [libcurl])
