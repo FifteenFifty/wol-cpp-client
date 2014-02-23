@@ -13,6 +13,7 @@
 #include <utils.hpp>
 #include <list>
 #include <map>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 /**
  * This namespace encapsulates all WoL client functionality.
@@ -351,6 +352,13 @@ namespace WoL
          */
         Actor * getDestinationActor();
 
+        /**
+         * This method returns the timestamp of this line.
+         *
+         * @return The timestamp of this line.
+         */
+        boost::posix_time::ptime getTimestamp();
+
     protected:
         /**
          * A basic constructor.
@@ -362,11 +370,11 @@ namespace WoL
          * @param info        A pointer to an object containing subject
          *                    information relating to this line.
          */
-        CombatLogLine(std::string  timestamp,
-                      Actor       *source,
-                      Actor       *destination,
-                      Event       *event,
-                      SubjectInfo *info);
+        CombatLogLine(boost::posix_time::ptime  timestamp,
+                      Actor                    *source,
+                      Actor                    *destination,
+                      Event                    *event,
+                      SubjectInfo              *info);
 
     private:
         /**
@@ -387,11 +395,15 @@ namespace WoL
          */
         const CombatLogLine & operator=(const CombatLogLine ass);
 
-        std::string  timestamp;   /**< This line's timestamp. */
-        Actor       *source;      /**< A pointer to the source actor. */
-        Actor       *destination; /**< A pointer to the destination actor. */
-        Event       *event;       /**< The event that this line describes. */
-        SubjectInfo *info;        /**< Subject information relating to this line. */
+        boost::posix_time::ptime  timestamp;   /**< This line's timestamp. */
+        Actor                    *source;      /**< A pointer to the source
+                                                *   actor. */
+        Actor                    *destination; /**< A pointer to the
+                                                *   destination actor. */
+        Event                    *event;       /**< The event that this line
+                                                *   describes. */
+        SubjectInfo              *info;        /**< Subject information
+                                                *   relating to this line. */
     };
 
     /**

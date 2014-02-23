@@ -224,9 +224,9 @@ namespace WoL
         size_t       consumable  = 0;
         SubjectInfo *info        = NULL;
 
-        std::string  timestamp;
-        boost::regex subjectInfo54Regex("(?<=,)0x[0-9A-Fa-f]{16}(?:,-?\\d+){5}(?:,-?\\d*\\.\\d+){2}");
-        std::string  subjectInfo;
+        boost::posix_time::ptime timestamp;
+        boost::regex             subjectInfo54Regex("(?<=,)0x[0-9A-Fa-f]{16}(?:,-?\\d+){5}(?:,-?\\d*\\.\\d+){2}");
+        std::string              subjectInfo;
 
         /*
          * After the double-space is  a comma-separated list of data;
@@ -306,7 +306,8 @@ namespace WoL
             }
         }
 
-        timestamp = line.substr(0, dateLength);
+        timestamp = boost::posix_time::time_from_string(line.substr(0,
+                                                                    dateLength));
         line      = line.substr(dateLength + 2, line.length());
 
         std::list<std::string>           data   = Utils::StringUtils::parseCsv(line);
@@ -390,11 +391,16 @@ namespace WoL
         return destination;
     }
 
-    CombatLogLine::CombatLogLine(std::string  timestamp,
-                                 Actor       *source,
-                                 Actor       *destination,
-                                 Event       *event,
-                                 SubjectInfo *info)
+    boost::posix_time::ptime CombatLogLine::getTimestamp()
+    {
+        return timestamp;
+    }
+
+    CombatLogLine::CombatLogLine(boost::posix_time::ptime  timestamp,
+                                 Actor                    *source,
+                                 Actor                    *destination,
+                                 Event                    *event,
+                                 SubjectInfo              *info)
     :
     timestamp(timestamp),
     source(source),

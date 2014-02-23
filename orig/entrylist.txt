@@ -13,11 +13,19 @@
     0000 0003
     0000 0005
 
-0000 0004 // Number of formats ??!
+0000 0004 // Number of formats ??! (1 per line)
     14
     55
     55
     44
+
+Format: 
+    delta in timestamp between lines
+    SourceActorIndex << 2
+    DestinationActorIndex << 4
+    eventIndex << 6
+
+
 
 0000 000c // Number of u8s
     01
