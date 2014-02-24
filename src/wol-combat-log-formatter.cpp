@@ -389,6 +389,8 @@ namespace WoL
             {
                 actorHotness[(*lineIt)->getDestinationActor()]++;
             }
+
+            std::cout<<"Time in ms: " << (*lineIt)->getTimestamp().total_milliseconds() << std::endl;;
         }
 
         for (hotnessIt = actorHotness.begin();
