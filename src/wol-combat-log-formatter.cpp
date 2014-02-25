@@ -378,6 +378,8 @@ namespace WoL
         std::list<Actor*>                    orderedActors;
         std::list<Actor*>::iterator          orderedActorIt;
         bool                                 added = false;
+        boost::posix_time::ptime             epoch(boost::gregorian::date(1970,1,1));
+
 
         for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
         {
@@ -385,12 +387,14 @@ namespace WoL
             {
                 actorHotness[(*lineIt)->getSourceActor()]++;
             }
+
             if ((*lineIt)->getDestinationActor())
             {
                 actorHotness[(*lineIt)->getDestinationActor()]++;
             }
 
-            std::cout<<"Time in ms: " << (*lineIt)->getTimestamp().total_milliseconds() << std::endl;;
+            std::cout<<"Timestamp: "  << (*lineIt)->getTimestamp() << std::endl;
+            std::cout<<"Time in ms: " << ((*lineIt)->getTimestamp() - epoch).total_milliseconds() << std::endl;;
         }
 
         for (hotnessIt = actorHotness.begin();

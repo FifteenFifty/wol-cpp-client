@@ -19,8 +19,8 @@
     55
     44
 
-Format: 
-    delta in timestamp between lines
+Format:
+    delta in timestamp between lines (timestamp of: "1/12 15:17:35.006" converts to: 1389539855006)
     SourceActorIndex << 2
     DestinationActorIndex << 4
     eventIndex << 6

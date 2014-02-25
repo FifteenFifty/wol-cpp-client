@@ -307,7 +307,7 @@ namespace WoL
         }
 
         boost::posix_time::time_input_facet *tif =
-                    new boost::posix_time::time_input_facet("%m/%d %H:%M:%S%f");
+                    new boost::posix_time::time_input_facet("%Y/%m/%d %H:%M:%S%f");
 
         std::stringstream timeConverter;
 
@@ -315,7 +315,7 @@ namespace WoL
         timeConverter.exceptions(std::ios_base::failbit);
 
 
-        timeConverter << line.substr(0, dateLength);
+        timeConverter << "2014/" << line.substr(0, dateLength);
         timeConverter >> timestamp;
 
         line      = line.substr(dateLength + 2, line.length());
