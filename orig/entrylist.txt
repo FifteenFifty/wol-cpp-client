@@ -5,7 +5,7 @@
 
 0000 0006 // Number of 32bit Ints following
     // These are ordered by 'hotness': The number of times that the Actor has
-    // been a source
+    // acted as a source or destination
     0000 0004
     0000 0000
     0000 0001
@@ -20,10 +20,17 @@
     44
 
 Format:
-    delta in timestamp between lines (timestamp of: "1/12 15:17:35.006" converts to: 1389539855006)
+    delta in timestamp (ms) between lines (timestamp of: "1/12 15:17:35.006" converts to: 1389539855006)
     SourceActorIndex << 2
     DestinationActorIndex << 4
     eventIndex << 6
+
+It seems that these data are 'saved' as the smallest type that they fit in:
+x = 0:       0;     0
+0 < x < 256: 1;     uint8_t
+x < 0:       3      int32_t
+x >= 65536:  3:     int32_t
+else         2:     uint16_t
 
 
 

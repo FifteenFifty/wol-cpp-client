@@ -377,12 +377,22 @@ namespace WoL
         std::list<CombatLogLine*>::iterator  lineIt;
         std::list<Actor*>                    orderedActors;
         std::list<Actor*>::iterator          orderedActorIt;
-        bool                                 added = false;
-        boost::posix_time::ptime             epoch(boost::gregorian::date(1970,1,1));
+        std::list<uint8_t>                   formatList;
 
+        std::list<uint8_t>                   byteList;
+        std::list<uint16_t>                  shortList;
+        std::list<int32_t>                   intList;
+
+        boost::posix_time::ptime             epoch(boost::gregorian::date(1970,1,1));
+        uint64_t                             lastTimestamp = 0;
+        int32_t                              delta         = 0;
+
+        bool                                 added = false;
 
         for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
         {
+            added = false;
+
             if ((*lineIt)->getSourceActor())
             {
                 actorHotness[(*lineIt)->getSourceActor()]++;
@@ -393,8 +403,19 @@ namespace WoL
                 actorHotness[(*lineIt)->getDestinationActor()]++;
             }
 
-            std::cout<<"Timestamp: "  << (*lineIt)->getTimestamp() << std::endl;
-            std::cout<<"Time in ms: " << ((*lineIt)->getTimestamp() - epoch).total_milliseconds() << std::endl;;
+            delta = Utils::Conversion::lexicalCast<int64_t,
+                                                   int32_t>(lastTimestamp -
+                                                            ((*lineIt)->getTimestamp() -
+                                                             epoch).total_milliseconds());
+            if (delta < 0)
+            {
+                delta = 0;
+            }
+
+            formatList.push_back(save(delta, byteList, shortList, intList));
+            formatList.back |= (save(delta, byteList, shortList, intList)) << 2;
+            formatList.back |= (save(delta, byteList, shortList, intList)) << 4;
+            formatList.back |= (save(delta, byteList, shortList, intList)) << 6;
         }
 
         for (hotnessIt = actorHotness.begin();
@@ -458,5 +479,48 @@ namespace WoL
             formattedLog->add((*orderedActorIt)->getIndex());
         }
 
+    }
+
+    uint8_t WolCombatLogFormatter::save(int32_t              value,
+                                        std::list<uint8_t>  &byteList,
+                                        std::list<uint16_t> &shortList,
+                                        std::list<int32_t>  &intList)
+    {
+        for (int i = 0; i <= 3 && !added; ++i)
+        {
+            try
+            {
+                switch (i)
+                {
+                    case 0:
+                        return 0;
+                        break;
+
+                    case 1:
+                        byteList.push_back(Utils::Conversion::lexicalCast<int32_t,
+                                                                          uint8_t>(value));
+                        return 1;
+                        break;
+
+                    case 2:
+                        shortList.push_back(Utils::Conversion::lexicalCast<int32_t,
+                                                                           uint16_t>(value));
+                        return 2;
+                        break;
+
+                    case 3:
+                        intList.push_back(value);
+                        return 3;
+
+                    default:
+                        /**
+                         * @TODO This case should never be reached. An error
+                         *       should be thrown here.
+                         *       MLB 27/02/2014
+                         */
+                        std::cerr << "Default case of WoL save reached!" << std::endl;
+                }
+            }
+        }
     }
 }

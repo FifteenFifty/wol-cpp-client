@@ -107,6 +107,31 @@ namespace WoL
          */
         void addStateList(CombatLog          &combatLog,
                           FormattedCombatLog *formattedLog);
+
+        /**
+         * This method takes a signed 32bit integral value and converts it to
+         * the smallest data type that can hold it. The resulting value is
+         * then stored in the appropriate list and its type identifier is
+         * returned. If the value is 0, it is not placed into any list.
+         *
+         * @param value     The value to be stored.
+         * @param byteList  A reference to a list of unsigned 8-bit integers
+         *                  into which _value_ shall be placed if it fits
+         *                  inside an unsigned byte.
+         * @param shortList A reference to a list of unsigned 16-bit integers
+         *                  into which _value_ shall be placed if it fits
+         *                  inside an unsigned short.
+         * @param intList   A reference to a list of signed 32-bit integers
+         *                  into which _value_ shall be placed if it does not
+         *                  fit into any other list.
+         *
+         * @return          The identifier of the type to which _value_ has
+         *                  been mapped.
+         */
+        uint8_t save(int32_t              value,
+                     std::list<uint8_t>  &byteList,
+                     std::list<uint16_t> &shortList,
+                     std::list<int32_t>  &intList);
     };
 }
 #endif
