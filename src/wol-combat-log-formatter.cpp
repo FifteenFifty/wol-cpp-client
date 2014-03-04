@@ -384,8 +384,8 @@ namespace WoL
         std::list<int32_t>                   intList;
 
         boost::posix_time::ptime             epoch(boost::gregorian::date(1970,1,1));
-        uint64_t                             lastTimestamp = 0;
-        int32_t                              delta         = 0;
+        int64_t                              lastTimestampMs = 0;
+        int32_t                              delta           = 0;
 
         bool                                 added = false;
 
@@ -403,19 +403,29 @@ namespace WoL
                 actorHotness[(*lineIt)->getDestinationActor()]++;
             }
 
-            delta = Utils::Conversion::lexicalCast<int64_t,
-                                                   int32_t>(lastTimestamp -
+            std::cout<<"Value: "
+                     << (lastTimestampMs -
+                        ((*lineIt)->getTimestamp() -
+                         epoch).total_milliseconds())
+                     << std::endl;
+
+            int64_t tmp = lastTimestampMs -
                                                             ((*lineIt)->getTimestamp() -
-                                                             epoch).total_milliseconds());
+                                                             epoch).total_milliseconds()) < 0 ? : );
+
+            delta = Utils::Conversion::lexicalCast<int64_t,
+                                                   int32_t>((lastTimestampMs -
+                                                            ((*lineIt)->getTimestamp() -
+                                                             epoch).total_milliseconds()) < 0 ? : );
             if (delta < 0)
             {
                 delta = 0;
             }
 
             formatList.push_back(save(delta, byteList, shortList, intList));
-            formatList.back |= (save(delta, byteList, shortList, intList)) << 2;
-            formatList.back |= (save(delta, byteList, shortList, intList)) << 4;
-            formatList.back |= (save(delta, byteList, shortList, intList)) << 6;
+            formatList.back() |= (save(delta, byteList, shortList, intList)) << 2;
+            formatList.back() |= (save(delta, byteList, shortList, intList)) << 4;
+            formatList.back() |= (save(delta, byteList, shortList, intList)) << 6;
         }
 
         for (hotnessIt = actorHotness.begin();
@@ -471,6 +481,8 @@ namespace WoL
 
 
 
+
+
         formattedLog->add((uint32_t) orderedActors.size());
         for (orderedActorIt = orderedActors.begin();
              orderedActorIt != orderedActors.end();
@@ -479,6 +491,9 @@ namespace WoL
             formattedLog->add((*orderedActorIt)->getIndex());
         }
 
+        formattedLog->add((uint32_t) formatList.size());
+        formattedLog->add(formatList);
+
     }
 
     uint8_t WolCombatLogFormatter::save(int32_t              value,
@@ -486,7 +501,9 @@ namespace WoL
                                         std::list<uint16_t> &shortList,
                                         std::list<int32_t>  &intList)
     {
-        for (int i = 0; i <= 3 && !added; ++i)
+        bool added = false;
+
+        for (int i = 0; i <= 2 && !added; ++i)
         {
             try
             {
@@ -508,10 +525,6 @@ namespace WoL
                         return 2;
                         break;
 
-                    case 3:
-                        intList.push_back(value);
-                        return 3;
-
                     default:
                         /**
                          * @TODO This case should never be reached. An error
@@ -521,6 +534,15 @@ namespace WoL
                         std::cerr << "Default case of WoL save reached!" << std::endl;
                 }
             }
+            catch (boost::bad_lexical_cast &e)
+            {
+                /* This is not an error: it means that the proposed type is
+                 * too small to fit the value. */
+                continue;
+            }
         }
+
+        intList.push_back(value);
+        return 3;
     }
 }
