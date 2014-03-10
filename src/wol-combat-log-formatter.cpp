@@ -403,29 +403,26 @@ namespace WoL
                 actorHotness[(*lineIt)->getDestinationActor()]++;
             }
 
-            std::cout<<"Value: "
-                     << (lastTimestampMs -
-                        ((*lineIt)->getTimestamp() -
-                         epoch).total_milliseconds())
-                     << std::endl;
+            int64_t tmp = ((*lineIt)->getTimestamp() -
+                           epoch).total_milliseconds() -
+                          lastTimestampMs;
 
-            int64_t tmp = lastTimestampMs -
-                                                            ((*lineIt)->getTimestamp() -
-                                                             epoch).total_milliseconds()) < 0 ? : );
-
-            delta = Utils::Conversion::lexicalCast<int64_t,
-                                                   int32_t>((lastTimestampMs -
-                                                            ((*lineIt)->getTimestamp() -
-                                                             epoch).total_milliseconds()) < 0 ? : );
-            if (delta < 0)
+            if (lastTimestampMs == 0)
             {
                 delta = 0;
+            }
+            else
+            {
+                delta = Utils::Conversion::lexicalCast<int64_t, int32_t>(tmp);
             }
 
             formatList.push_back(save(delta, byteList, shortList, intList));
             formatList.back() |= (save(delta, byteList, shortList, intList)) << 2;
             formatList.back() |= (save(delta, byteList, shortList, intList)) << 4;
             formatList.back() |= (save(delta, byteList, shortList, intList)) << 6;
+
+            lastTimestampMs = ((*lineIt)->getTimestamp() -
+                               epoch).total_milliseconds();
         }
 
         for (hotnessIt = actorHotness.begin();
