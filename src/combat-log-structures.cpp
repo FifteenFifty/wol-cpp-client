@@ -406,6 +406,11 @@ namespace WoL
         return timestamp;
     }
 
+    Event * CombatLogLine::getEvent()
+    {
+        return event;
+    }
+
     CombatLogLine::CombatLogLine(boost::posix_time::ptime  timestamp,
                                  Actor                    *source,
                                  Actor                    *destination,

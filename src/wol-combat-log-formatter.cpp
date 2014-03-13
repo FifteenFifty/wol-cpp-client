@@ -417,9 +417,25 @@ namespace WoL
             }
 
             formatList.push_back(save(delta, byteList, shortList, intList));
-            formatList.back() |= (save(delta, byteList, shortList, intList)) << 2;
-            formatList.back() |= (save(delta, byteList, shortList, intList)) << 4;
-            formatList.back() |= (save(delta, byteList, shortList, intList)) << 6;
+            formatList.back() |= ((save((*lineIt)->getSourceActor()->getIndex(),
+                                        byteList,
+                                        shortList,
+                                        intList)) << 2);
+            if ((*lineIt)->getDestinationActor())
+            {
+                formatList.back() |= ((save((*lineIt)->getDestinationActor()->getIndex(),
+                                            byteList,
+                                            shortList,
+                                            intList)) << 4);
+            }
+
+            if ((*lineIt)->getEvent())
+            {
+                formatList.back() |= ((save((*lineIt)->getEvent()->getId(),
+                                            byteList,
+                                            shortList,
+                                            intList)) << 6);
+            }
 
             lastTimestampMs = ((*lineIt)->getTimestamp() -
                                epoch).total_milliseconds();
@@ -491,6 +507,14 @@ namespace WoL
         formattedLog->add((uint32_t) formatList.size());
         formattedLog->add(formatList);
 
+        formattedLog->add((uint32_t) byteList.size());
+        formattedLog->add(byteList);
+
+        formattedLog->add((uint32_t) shortList.size());
+        formattedLog->add(shortList);
+
+        formattedLog->add((uint32_t) intList.size());
+        formattedLog->add(intList);
     }
 
     uint8_t WolCombatLogFormatter::save(int32_t              value,
@@ -507,7 +531,10 @@ namespace WoL
                 switch (i)
                 {
                     case 0:
-                        return 0;
+                        if (value == 0)
+                        {
+                            return 0;
+                        }
                         break;
 
                     case 1:

@@ -359,6 +359,13 @@ namespace WoL
          */
         boost::posix_time::ptime getTimestamp();
 
+        /**
+         * This method returns a pointer to this line's Event.
+         *
+         * @return A pointer to this line's Event.
+         */
+        Event * getEvent();
+
     protected:
         /**
          * A basic constructor.

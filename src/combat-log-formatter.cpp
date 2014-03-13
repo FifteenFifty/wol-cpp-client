@@ -41,6 +41,12 @@ namespace WoL
     }
 
     template <>
+    void FormattedCombatLog::add(int32_t toAdd)
+    {
+        add((uint32_t) toAdd);
+    }
+
+    template <>
     void FormattedCombatLog::add(uint64_t toAdd)
     {
         byteBuffer.push_back((toAdd >> 56 & 0xFF));
