@@ -386,11 +386,12 @@ namespace WoL
         boost::posix_time::ptime             epoch(boost::gregorian::date(1970,1,1));
         int64_t                              lastTimestampMs = 0;
         int32_t                              delta           = 0;
+        bool                                 added           = false;
 
-        bool                                 added = false;
-
+        int a = 0;
         for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
         {
+            a++;
             added = false;
 
             if ((*lineIt)->getSourceActor())
@@ -409,7 +410,8 @@ namespace WoL
 
             if (lastTimestampMs == 0)
             {
-                delta = 0;
+                formattedLog->add(tmp);
+                delta       = 0;
             }
             else
             {
@@ -417,16 +419,24 @@ namespace WoL
             }
 
             formatList.push_back(save(delta, byteList, shortList, intList));
+            std::cout<<0<<std::endl;
+
             formatList.back() |= ((save((*lineIt)->getSourceActor()->getIndex(),
                                         byteList,
                                         shortList,
                                         intList)) << 2);
+            std::cout<<1<<std::endl;
             if ((*lineIt)->getDestinationActor())
             {
                 formatList.back() |= ((save((*lineIt)->getDestinationActor()->getIndex(),
                                             byteList,
                                             shortList,
                                             intList)) << 4);
+            std::cout<<2<<std::endl;
+            }
+            else
+            {
+                std::cout<<"No dest actor on line: " << a<<std::endl;
             }
 
             if ((*lineIt)->getEvent())
@@ -435,6 +445,11 @@ namespace WoL
                                             byteList,
                                             shortList,
                                             intList)) << 6);
+            std::cout<<3<<std::endl;
+            }
+            else
+            {
+                std::cout<<"No event on line: " << a<<std::endl;
             }
 
             lastTimestampMs = ((*lineIt)->getTimestamp() -
@@ -473,29 +488,6 @@ namespace WoL
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         formattedLog->add((uint32_t) orderedActors.size());
         for (orderedActorIt = orderedActors.begin();
              orderedActorIt != orderedActors.end();
@@ -522,51 +514,25 @@ namespace WoL
                                         std::list<uint16_t> &shortList,
                                         std::list<int32_t>  &intList)
     {
-        bool added = false;
-
-        for (int i = 0; i <= 2 && !added; ++i)
+        std::cout<<"Value: " << value << std::endl;
+        if (value == 0)
         {
-            try
-            {
-                switch (i)
-                {
-                    case 0:
-                        if (value == 0)
-                        {
-                            return 0;
-                        }
-                        break;
-
-                    case 1:
-                        byteList.push_back(Utils::Conversion::lexicalCast<int32_t,
-                                                                          uint8_t>(value));
-                        return 1;
-                        break;
-
-                    case 2:
-                        shortList.push_back(Utils::Conversion::lexicalCast<int32_t,
-                                                                           uint16_t>(value));
-                        return 2;
-                        break;
-
-                    default:
-                        /**
-                         * @TODO This case should never be reached. An error
-                         *       should be thrown here.
-                         *       MLB 27/02/2014
-                         */
-                        std::cerr << "Default case of WoL save reached!" << std::endl;
-                }
-            }
-            catch (boost::bad_lexical_cast &e)
-            {
-                /* This is not an error: it means that the proposed type is
-                 * too small to fit the value. */
-                continue;
-            }
+            return 0;
         }
-
-        intList.push_back(value);
-        return 3;
+        else if (value > 0 && value <= 255)
+        {
+            byteList.push_back((uint8_t) value);
+            return 1;
+        }
+        else if (value > 0 && value <= 65535)
+        {
+            shortList.push_back((uint16_t) value);
+            return 2;
+        }
+        else
+        {
+            intList.push_back(value);
+            return 3;
+        }
     }
 }
