@@ -403,57 +403,6 @@ namespace WoL
             {
                 actorHotness[(*lineIt)->getDestinationActor()]++;
             }
-
-            int64_t tmp = ((*lineIt)->getTimestamp() -
-                           epoch).total_milliseconds() -
-                          lastTimestampMs;
-
-            if (lastTimestampMs == 0)
-            {
-                formattedLog->add(tmp);
-                delta       = 0;
-            }
-            else
-            {
-                delta = Utils::Conversion::lexicalCast<int64_t, int32_t>(tmp);
-            }
-
-            formatList.push_back(save(delta, byteList, shortList, intList));
-            std::cout<<0<<std::endl;
-
-            formatList.back() |= ((save((*lineIt)->getSourceActor()->getIndex(),
-                                        byteList,
-                                        shortList,
-                                        intList)) << 2);
-            std::cout<<1<<std::endl;
-            if ((*lineIt)->getDestinationActor())
-            {
-                formatList.back() |= ((save((*lineIt)->getDestinationActor()->getIndex(),
-                                            byteList,
-                                            shortList,
-                                            intList)) << 4);
-            std::cout<<2<<std::endl;
-            }
-            else
-            {
-                std::cout<<"No dest actor on line: " << a<<std::endl;
-            }
-
-            if ((*lineIt)->getEvent())
-            {
-                formatList.back() |= ((save((*lineIt)->getEvent()->getId(),
-                                            byteList,
-                                            shortList,
-                                            intList)) << 6);
-            std::cout<<3<<std::endl;
-            }
-            else
-            {
-                std::cout<<"No event on line: " << a<<std::endl;
-            }
-
-            lastTimestampMs = ((*lineIt)->getTimestamp() -
-                               epoch).total_milliseconds();
         }
 
         for (hotnessIt = actorHotness.begin();
@@ -486,6 +435,54 @@ namespace WoL
             {
                 orderedActors.push_back(hotnessIt->first);
             }
+        }
+
+        /* Update the Actor hotness map to point to Actors' relative
+         * positions in the hotness list. */
+        orderedActorIt = orderedActors.begin();
+
+        for (int i = 0; i < orderedActors.size(); ++i, ++orderedActorIt)
+        {
+            actorHotness[*orderedActorIt] = i;
+        }
+
+        for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
+        {
+            int64_t tmp = ((*lineIt)->getTimestamp() -
+                           epoch).total_milliseconds() -
+                          lastTimestampMs;
+
+            if (lastTimestampMs == 0)
+            {
+                formattedLog->add(tmp);
+                delta       = 0;
+            }
+            else
+            {
+                delta = Utils::Conversion::lexicalCast<int64_t, int32_t>(tmp);
+            }
+
+            formatList.push_back(save(delta, byteList, shortList, intList));
+
+            formatList.back() |= (1 << 2);
+            byteList.push_back(actorHotness[(*lineIt)->getSourceActor()]);
+
+            if ((*lineIt)->getDestinationActor())
+            {
+                formatList.back() |= (1 << 4);
+                byteList.push_back(actorHotness[(*lineIt)->getDestinationActor()]);
+            }
+
+            if ((*lineIt)->getEvent())
+            {
+                formatList.back() |= ((save((*lineIt)->getEvent()->getId(),
+                                            byteList,
+                                            shortList,
+                                            intList)) << 6);
+            }
+
+            lastTimestampMs = ((*lineIt)->getTimestamp() -
+                               epoch).total_milliseconds();
         }
 
         formattedLog->add((uint32_t) orderedActors.size());
