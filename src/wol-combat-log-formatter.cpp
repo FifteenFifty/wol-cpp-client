@@ -37,8 +37,8 @@ namespace WoL
 //        addPropertyInfo(log);
 //        addActorInfo(combatLog, log);
 //        addEventInfo(combatLog, log);
-        addEntryInfo(combatLog, log);
-//        addStateList(combatLog, log);
+//        addEntryInfo(combatLog, log);
+        addStateList(combatLog, log);
 
         return log;
     }
@@ -506,12 +506,17 @@ namespace WoL
         formattedLog->add(intList);
     }
 
+   void WolCombatLogFormatter::addStateList(CombatLog          &combatLog,
+                                            FormattedCombatLog *formattedLog)
+   {
+        formattedLog->add(std::string("SUBINFO2"));
+   }
+
     uint8_t WolCombatLogFormatter::save(int32_t              value,
                                         std::list<uint8_t>  &byteList,
                                         std::list<uint16_t> &shortList,
                                         std::list<int32_t>  &intList)
     {
-        std::cout<<"Value: " << value << std::endl;
         if (value == 0)
         {
             return 0;
