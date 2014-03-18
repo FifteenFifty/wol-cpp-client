@@ -22,11 +22,6 @@ class outtest
             parser.parseLine(combatLog, line4, 4);
             combatLog.finish();
 
-            for (int i = 0; i < com.wol3.client.data.EntryList.sources.size(); ++i)
-            {
-                System.out.println("source: " + com.wol3.client.data.EntryList.sources.get(i);
-            }
-
             /* The following is copied code from     BinaryCombatLog::public void
              * writeTo(java.nio.ByteBuffer bb, int fromActor, int fromEvent,
              * int fromEntry)                           |
@@ -70,13 +65,22 @@ bb = java.nio.ByteBuffer.allocate(0x1fb);
                 combatLog.stateList.writeToBuffer(bb, combatLog, fromEntry);
 System.out.println("6");
 System.out.println(bytesToHexString(bb.array()));
-bb = java.nio.ByteBuffer.allocate(0x1fb);
+bb = java.nio.ByteBuffer.allocate(0xfff);
             com.wol3.util.perf.SimpleProfiler.staticExit();
+
+
+
+
+
+
         }
         catch(Exception e)
         {
             System.out.println(e);
         }
+
+
+
     }
 
     public static String bytesToHexString(byte[] bytes){
